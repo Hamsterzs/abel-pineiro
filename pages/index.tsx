@@ -33,7 +33,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/jupiter.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
@@ -47,7 +48,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/neptune.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
