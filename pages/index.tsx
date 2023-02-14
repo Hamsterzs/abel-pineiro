@@ -7,7 +7,6 @@ const Home: NextPage = () => {
     <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-gray-200">
       <Head>
         <title>Abel Pineiro</title>
-        <html lang="en" />
         {/* <meta
           name="description"
           content="Welcome to my personal website, Click through to learn about me."
