@@ -63,7 +63,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/coldPlanet.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
@@ -81,7 +82,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/venus.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
@@ -95,7 +97,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/starwarsPlanet.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
@@ -109,7 +112,8 @@ const Home: NextPage = () => {
               </button>
               <Image
                 src="/purplePlanet.png"
-                fill
+                height={200}
+                width={200}
                 alt="abel pineiro"
                 className="-z-10"
               />
