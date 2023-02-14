@@ -48,7 +48,6 @@ module.exports = {
       fontFamily: {
         abel: ["var(--font-abel)", ...fontFamily.sans],
         prompt: ["var(--font-prompt)", ...fontFamily.sans],
-        dancingScript: ["var(--font-dancing-script)", ...fontFamily.sans],
       },
     },
   },
