@@ -7,10 +7,10 @@ const Home: NextPage = () => {
     <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-gray-200">
       <Head>
         <title>Abel Pineiro</title>
-        {/* <meta
+        <meta
           name="description"
           content="Welcome to my personal website, Click through to learn about me."
-        /> */}
+        />
       </Head>
       <div className="flex w-full flex-col items-center">
         <div className="flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl 4xl:gap-2 4xl:py-48 4xl:px-12">
