@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Home: NextPage = () => {
   return (
-    <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden bg-gray-200">
+    <>
       <Head>
         <title>Abel Pineiro</title>
         <meta
@@ -12,116 +12,210 @@ const Home: NextPage = () => {
           content="Welcome to my personal website, Click through to learn about me."
         />
       </Head>
-      <div className="flex w-full flex-col items-center">
-        <div className="flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl 4xl:gap-2 4xl:py-48 4xl:px-12">
-          <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
-            <Image src="/me.jpg" fill alt="abel pineiro" />
-          </div>
-          <h1 className="font-prompt text-4xl 4xl:text-5xl">Abel Pineiro</h1>
-          <p className="w-10/12 font-abel text-2xl 4xl:text-3xl">
-            Navigate to some of my interests by selecting a planet.
-          </p>
-        </div>
-      </div>
 
-      <div className="absolute aspect-square h-[90%] animate-orbit-slow rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent ">
-        <div className="relative h-full w-full">
-          <div className="absolute left-1/2 top-0 flex aspect-square h-[15%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
-            <div className="h-full w-full animate-orbit-slow-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Code
-              </button>
+      <div className="flex flex-col gap-4 bg-gray-200 px-2 py-10 lg:hidden">
+        <div className="flex h-1/2 w-full flex-col items-center">
+          <div className="flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl 4xl:gap-2 4xl:py-48 4xl:px-12">
+            <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
+              <Image src="/me.jpg" fill alt="abel pineiro" />
+            </div>
+            <h1 className="font-prompt text-4xl 4xl:text-5xl">Abel Pineiro</h1>
+            <p className="w-10/12 font-abel text-2xl 4xl:text-3xl">
+              Navigate to some of my interests by selecting a planet.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex h-1/2 w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center gap-1 rounded-lg bg-white py-12 px-2 text-center shadow-2xl">
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Work
+              </span>
               <Image
                 src="/jupiter.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth"
               />
             </div>
-          </div>
-
-          <div className="absolute left-0 bottom-0 flex aspect-square h-[15%] translate-x-full items-center justify-center rounded-full bg-blue-300">
-            <div className="h-full w-full animate-orbit-slow-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Work
-              </button>
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Music
+              </span>
               <Image
                 src="/neptune.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 z-20 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-1"
               />
             </div>
-          </div>
-
-          <div className="absolute right-0 top-1/2 flex aspect-square h-[15%] translate-x-1/2 items-center justify-center rounded-full">
-            <div className="h-full w-full animate-orbit-slow-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Music
-              </button>
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Movies & TV
+              </span>
               <Image
                 src="/coldPlanet.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-2"
               />
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="absolute aspect-square h-[65%] animate-orbit rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
-        <div className="relative h-full w-full">
-          <div className="absolute bottom-0 left-1/2 flex aspect-square h-[20%] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
-            <div className="h-full w-full animate-orbit-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Music
-              </button>
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Anime
+              </span>
               <Image
                 src="/venus.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-3"
               />
             </div>
-          </div>
-
-          <div className="absolute top-0 right-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
-            <div className="h-full w-full animate-orbit-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Music
-              </button>
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Code
+              </span>
               <Image
                 src="/starwarsPlanet.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-4"
               />
             </div>
-          </div>
-
-          <div className="absolute top-1/2 left-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
-            <div className="h-full w-full animate-orbit-reverse">
-              <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                Music
-              </button>
+            <div className="relative h-20 w-full rounded-full bg-slate-500">
+              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
+                Games
+              </span>
               <Image
                 src="/purplePlanet.png"
-                height={200}
-                width={200}
+                height={80}
+                width={80}
                 alt="abel pineiro"
-                className="-z-10"
+                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-5"
               />
             </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="relative hidden h-screen w-screen items-center justify-center overflow-hidden bg-gray-200 lg:flex">
+        <div className="flex w-full flex-col items-center">
+          <div className="flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl 4xl:gap-2 4xl:py-48 4xl:px-12">
+            <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
+              <Image src="/me.jpg" fill alt="abel pineiro" />
+            </div>
+            <h1 className="font-prompt text-4xl 4xl:text-5xl">Abel Pineiro</h1>
+            <p className="w-10/12 font-abel text-2xl 4xl:text-3xl">
+              Navigate to some of my interests by selecting a planet.
+            </p>
+          </div>
+        </div>
+
+        <div className="absolute aspect-square h-[90%] animate-orbit-slow rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent ">
+          <div className="relative h-full w-full">
+            <div className="absolute left-1/2 top-0 flex aspect-square h-[15%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
+              <div className="h-full w-full animate-orbit-slow-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Work
+                </button>
+                <Image
+                  src="/jupiter.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+
+            <div className="absolute left-0 bottom-0 flex aspect-square h-[15%] translate-x-full items-center justify-center rounded-full bg-blue-300">
+              <div className="h-full w-full animate-orbit-slow-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Music
+                </button>
+                <Image
+                  src="/neptune.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+
+            <div className="absolute right-0 top-1/2 flex aspect-square h-[15%] translate-x-1/2 items-center justify-center rounded-full">
+              <div className="h-full w-full animate-orbit-slow-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Movies & TV
+                </button>
+                <Image
+                  src="/coldPlanet.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute aspect-square h-[65%] animate-orbit rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
+          <div className="relative h-full w-full">
+            <div className="absolute bottom-0 left-1/2 flex aspect-square h-[20%] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
+              <div className="h-full w-full animate-orbit-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Anime
+                </button>
+                <Image
+                  src="/venus.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+
+            <div className="absolute top-0 right-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
+              <div className="h-full w-full animate-orbit-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Code
+                </button>
+                <Image
+                  src="/starwarsPlanet.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+
+            <div className="absolute top-1/2 left-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
+              <div className="h-full w-full animate-orbit-reverse">
+                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+                  Games
+                </button>
+                <Image
+                  src="/purplePlanet.png"
+                  height={200}
+                  width={200}
+                  alt="abel pineiro"
+                  className="-z-10"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
