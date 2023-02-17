@@ -17,7 +17,7 @@ const prompt = Prompt({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <main
-      className={`${abel.variable} ${prompt.variable} bg-gray-200 lg:h-screen lg:w-screen lg:overflow-hidden`}
+      className={`${abel.variable} ${prompt.variable} h-screen w-screen bg-gray-200 lg:overflow-hidden`}
     >
       <Component {...pageProps} />
     </main>

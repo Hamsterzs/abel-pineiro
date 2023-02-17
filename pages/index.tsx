@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Home: NextPage = () => {
   return (
-    <>
+    <div className="bg-gray-200 lg:h-screen lg:w-screen lg:overflow-hidden">
       <Head>
         <title>Abel Pineiro</title>
         <meta
@@ -15,7 +15,7 @@ const Home: NextPage = () => {
 
       <div className="flex flex-col gap-4 px-2 py-10 lg:hidden">
         <div className="flex h-1/2 w-full flex-col items-center">
-          <div className="container flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl">
+          <div className="container flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl md:max-w-[60%]">
             <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
               <Image src="/me.jpg" fill alt="abel pineiro" />
             </div>
@@ -26,7 +26,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="container mx-auto flex h-1/2 flex-col items-center">
+        <div className="container mx-auto flex h-1/2 flex-col items-center md:max-w-[60%]">
           <div className="flex w-full flex-col items-center gap-1 rounded-lg bg-white py-12 px-2 text-center shadow-2xl">
             <div className="relative h-20 w-full rounded-full bg-slate-500">
               <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
@@ -215,7 +215,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
