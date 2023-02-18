@@ -16,7 +16,7 @@ module.exports = {
         "spin-reverse": {
           to: { transform: "rotate(-360deg)" },
         },
-        "back-in-forth": {
+        "back-and-forth": {
           from: { left: "0%", transform: "translate(0%, -50%)" },
           to: { left: "100%", transform: "translate(-100%, -50%)" },
         },
@@ -26,16 +26,17 @@ module.exports = {
         "orbit-reverse": "spin-reverse 180s linear infinite",
         "orbit-slow": "spin 200s linear infinite",
         "orbit-slow-reverse": "spin-reverse 200s linear infinite",
-        "back-in-forth": "back-in-forth 1s ease-in-out infinite alternate",
-        "back-in-forth-1":
-          "back-in-forth 1s ease-in-out infinite alternate .2s",
-        "back-in-forth-2":
-          "back-in-forth 1s ease-in-out infinite alternate .4s",
-        "back-in-forth-3":
-          "back-in-forth 1s ease-in-out infinite alternate .6s",
-        "back-in-forth-4":
-          "back-in-forth 1s ease-in-out infinite alternate .8s",
-        "back-in-forth-5": "back-in-forth 1s ease-in-out infinite alternate 1s",
+        "back-and-forth-1": "back-and-forth 1s ease-in-out infinite alternate",
+        "back-and-forth-2":
+          "back-and-forth 1s ease-in-out infinite alternate .2s",
+        "back-and-forth-3":
+          "back-and-forth 1s ease-in-out infinite alternate .4s",
+        "back-and-forth-4":
+          "back-and-forth 1s ease-in-out infinite alternate .6s",
+        "back-and-forth-5":
+          "back-and-forth 1s ease-in-out infinite alternate .8s",
+        "back-and-forth-6":
+          "back-and-forth 1s ease-in-out infinite alternate 1s",
       },
       screens: {
         sm: "640px",
@@ -58,6 +59,8 @@ module.exports = {
 
         "4xl": "2560px",
         // => @media (min-width: 2560px) { ... }
+
+        tall: { raw: "(orientation: portrait)" },
       },
       fontFamily: {
         abel: ["var(--font-abel)", ...fontFamily.sans],

@@ -3,8 +3,12 @@ import Head from "next/head";
 import Image from "next/image";
 
 const Home: NextPage = () => {
+  const TITLE = "Abel Pineiro";
+  const DESCRIPTION =
+    "Welcome to my personal website, Navigate to some of my interests by selecting a planet.";
+
   return (
-    <div className="bg-gray-200 lg:h-screen lg:w-screen lg:overflow-hidden">
+    <div className="h-screen w-screen overflow-auto bg-gray-200 lg:overflow-hidden">
       <Head>
         <title>Abel Pineiro</title>
         <meta
@@ -13,208 +17,196 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <div className="flex flex-col gap-4 px-2 py-10 lg:hidden">
+      <div className="flex flex-col gap-4 px-2 py-10 lg:hidden tall:flex">
         <div className="flex h-1/2 w-full flex-col items-center">
-          <div className="container flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl md:max-w-[60%]">
+          <div className="container flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl md:w-[35rem]">
             <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
               <Image src="/me.jpg" fill alt="abel pineiro" />
             </div>
-            <h1 className="font-prompt text-4xl 4xl:text-5xl">Abel Pineiro</h1>
+            <h1 className="font-prompt text-4xl 4xl:text-5xl">{TITLE}</h1>
             <p className="w-10/12 font-abel text-2xl 4xl:text-3xl">
-              Navigate to some of my interests by selecting a planet.
+              {DESCRIPTION}
             </p>
           </div>
         </div>
 
-        <div className="container mx-auto flex h-1/2 flex-col items-center md:max-w-[60%]">
-          <div className="flex w-full flex-col items-center gap-1 rounded-lg bg-white py-12 px-2 text-center shadow-2xl">
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Work
-              </span>
-              <Image
-                src="/jupiter.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth"
-              />
-            </div>
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Music
-              </span>
-              <Image
-                src="/neptune.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 z-20 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-1"
-              />
-            </div>
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Movies & TV
-              </span>
-              <Image
-                src="/coldPlanet.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-2"
-              />
-            </div>
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Anime
-              </span>
-              <Image
-                src="/venus.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-3"
-              />
-            </div>
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Code
-              </span>
-              <Image
-                src="/starwarsPlanet.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-4"
-              />
-            </div>
-            <div className="relative h-20 w-full rounded-full bg-slate-500">
-              <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-white">
-                Games
-              </span>
-              <Image
-                src="/purplePlanet.png"
-                height={80}
-                width={80}
-                alt="abel pineiro"
-                className="absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] animate-back-in-forth-5"
-              />
-            </div>
+        <div className="container mx-auto flex h-1/2 flex-col items-center md:w-[35rem]">
+          <div className="flex w-full flex-col items-center gap-1 rounded-lg bg-white py-12 px-4 text-center shadow-2xl md:gap-2 md:px-8">
+            <PlanetSlider
+              title="Work"
+              planetImage="/jupiter.png"
+              animation="animate-back-and-forth-1"
+            />
+            <PlanetSlider
+              title="Music"
+              planetImage="/neptune.png"
+              animation="animate-back-and-forth-2"
+            />
+            <PlanetSlider
+              title="Movies & TV"
+              planetImage="/coldPlanet.png"
+              animation="animate-back-and-forth-3"
+            />
+            <PlanetSlider
+              title="Anime"
+              planetImage="/venus.png"
+              animation="animate-back-and-forth-4"
+            />
+            <PlanetSlider
+              title="Code"
+              planetImage="/starwarsPlanet.png"
+              animation="animate-back-and-forth-5"
+            />
+            <PlanetSlider
+              title="Games"
+              planetImage="/purplePlanet.png"
+              animation="animate-back-and-forth-6"
+            />
           </div>
         </div>
       </div>
 
-      <div className="relative hidden h-screen w-screen items-center justify-center overflow-hidden lg:flex">
+      <div className="relative hidden h-screen w-screen items-center justify-center overflow-hidden lg:flex tall:hidden">
         <div className="flex w-full flex-col items-center">
-          <div className="flex flex-col items-center gap-1 rounded-lg bg-white py-28 px-2 text-center shadow-2xl 4xl:gap-2 4xl:py-48 4xl:px-12">
+          <div className="flex w-[35%] min-w-[500px] max-w-[550px] flex-col items-center gap-1 rounded-lg bg-white py-28 px-0  text-center shadow-2xl 4xl:max-w-[650px] 4xl:gap-4 4xl:py-48 4xl:px-2">
             <div className="relative flex aspect-square w-[15%] min-w-[200px] items-center justify-center overflow-hidden rounded-full">
               <Image src="/me.jpg" fill alt="abel pineiro" />
             </div>
-            <h1 className="font-prompt text-4xl 4xl:text-5xl">Abel Pineiro</h1>
-            <p className="w-10/12 font-abel text-2xl 4xl:text-3xl">
-              Navigate to some of my interests by selecting a planet.
+            <h1 className="font-prompt text-4xl 4xl:text-5xl">{TITLE}</h1>
+            <p className="w-3/4 font-abel text-2xl 4xl:text-3xl">
+              {DESCRIPTION}
             </p>
           </div>
         </div>
 
-        <div className="absolute aspect-square h-[90%] animate-orbit-slow rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent ">
+        <div className="absolute aspect-square h-[85%] animate-orbit-slow rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
           <div className="relative h-full w-full">
-            <div className="absolute left-1/2 top-0 flex aspect-square h-[15%] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
-              <div className="h-full w-full animate-orbit-slow-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Work
-                </button>
-                <Image
-                  src="/jupiter.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingOuterPlanet
+              className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+              title="Work"
+              image="/jupiter.png"
+            />
 
-            <div className="absolute left-0 bottom-0 flex aspect-square h-[15%] translate-x-full items-center justify-center rounded-full bg-blue-300">
-              <div className="h-full w-full animate-orbit-slow-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Music
-                </button>
-                <Image
-                  src="/neptune.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingOuterPlanet
+              className="left-0 bottom-0 translate-x-full"
+              title="Music"
+              image="/neptune.png"
+            />
 
-            <div className="absolute right-0 top-1/2 flex aspect-square h-[15%] translate-x-1/2 items-center justify-center rounded-full">
-              <div className="h-full w-full animate-orbit-slow-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Movies & TV
-                </button>
-                <Image
-                  src="/coldPlanet.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingOuterPlanet
+              className="right-0 top-1/2 translate-x-1/2"
+              image="/coldPlanet.png"
+              title="Entertainment"
+            />
           </div>
         </div>
 
-        <div className="absolute aspect-square h-[65%] animate-orbit rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
+        <div className="absolute aspect-square h-[62%] animate-orbit rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
           <div className="relative h-full w-full">
-            <div className="absolute bottom-0 left-1/2 flex aspect-square h-[20%] -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full bg-blue-300">
-              <div className="h-full w-full animate-orbit-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Anime
-                </button>
-                <Image
-                  src="/venus.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingInnerPlanet
+              image="/venus.png"
+              title="Anime"
+              className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2"
+            />
 
-            <div className="absolute top-0 right-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
-              <div className="h-full w-full animate-orbit-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Code
-                </button>
-                <Image
-                  src="/starwarsPlanet.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingInnerPlanet
+              image="/starwarsPlanet.png"
+              title="Code"
+              className="top-0 right-0 -translate-x-1/2"
+            />
 
-            <div className="absolute top-1/2 left-0 flex aspect-square h-[20%] -translate-x-1/2 items-center justify-center rounded-full">
-              <div className="h-full w-full animate-orbit-reverse">
-                <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
-                  Games
-                </button>
-                <Image
-                  src="/purplePlanet.png"
-                  height={200}
-                  width={200}
-                  alt="abel pineiro"
-                  className="-z-10"
-                />
-              </div>
-            </div>
+            <OrbitingInnerPlanet
+              image="/purplePlanet.png"
+              title="Games"
+              className="top-1/2 left-0 -translate-x-1/2"
+            />
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const OrbitingInnerPlanet = ({
+  className,
+  title,
+  image,
+}: {
+  className: string;
+
+  title: string;
+  image: string;
+}) => {
+  return (
+    <div
+      className={`rounded-ful absolute flex aspect-square h-[20%] items-center justify-center ${className}`}
+    >
+      <div className="h-full w-full animate-orbit-reverse">
+        <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+          {title}
+        </button>
+        <Image
+          src={image}
+          height={200}
+          width={200}
+          alt="planet"
+          className="-z-10"
+        />
+      </div>
+    </div>
+  );
+};
+
+const OrbitingOuterPlanet = ({
+  className,
+  title,
+  image,
+}: {
+  className: string;
+  title: string;
+  image: string;
+}) => {
+  return (
+    <div
+      className={`absolute flex aspect-square h-[15%] items-center justify-center rounded-full ${className}`}
+    >
+      <div className="h-full w-full animate-orbit-slow-reverse">
+        <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+          {title}
+        </button>
+        <Image
+          src={image}
+          height={200}
+          width={200}
+          alt="planet"
+          className="-z-10"
+        />
+      </div>
+    </div>
+  );
+};
+
+const PlanetSlider = ({
+  title,
+  planetImage,
+  animation,
+}: {
+  title: string;
+  planetImage: string;
+  animation: string;
+}) => {
+  return (
+    <div className="relative h-20 w-full max-w-sm rounded-full border-4 border-slate-500 shadow-md">
+      <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-slate-500">
+        {title}
+      </span>
+      <Image
+        src={planetImage}
+        height={80}
+        width={80}
+        alt="planet"
+        className={`absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] ${animation}`}
+      />
     </div>
   );
 };
