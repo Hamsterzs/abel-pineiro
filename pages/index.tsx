@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   const TITLE = "Abel Pineiro";
@@ -36,31 +37,38 @@ const Home: NextPage = () => {
               title="Work"
               planetImage="/jupiter.png"
               animation="animate-back-and-forth-1"
+              links="/music"
             />
+
             <PlanetSlider
               title="Music"
               planetImage="/neptune.png"
               animation="animate-back-and-forth-2"
+              links="/music"
             />
             <PlanetSlider
               title="Movies & TV"
               planetImage="/coldPlanet.png"
               animation="animate-back-and-forth-3"
+              links="/music"
             />
             <PlanetSlider
               title="Anime"
               planetImage="/venus.png"
               animation="animate-back-and-forth-4"
+              links="/music"
             />
             <PlanetSlider
               title="Code"
               planetImage="/starwarsPlanet.png"
               animation="animate-back-and-forth-5"
+              links="/music"
             />
             <PlanetSlider
               title="Games"
               planetImage="/purplePlanet.png"
               animation="animate-back-and-forth-6"
+              links="/music"
             />
           </div>
         </div>
@@ -87,11 +95,13 @@ const Home: NextPage = () => {
               image="/jupiter.png"
             />
 
-            <OrbitingOuterPlanet
-              className="left-0 bottom-0 translate-x-full"
-              title="Music"
-              image="/neptune.png"
-            />
+            <Link href="/music">
+              <OrbitingOuterPlanet
+                className="left-0 bottom-0 translate-x-full"
+                title="Music"
+                image="/neptune.png"
+              />
+            </Link>
 
             <OrbitingOuterPlanet
               className="right-0 top-1/2 translate-x-1/2"
@@ -142,9 +152,9 @@ const OrbitingInnerPlanet = ({
       className={`rounded-ful absolute flex aspect-square h-[20%] items-center justify-center ${className}`}
     >
       <div className="h-full w-full animate-orbit-reverse">
-        <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+        <div className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
           {title}
-        </button>
+        </div>
         <Image
           src={image}
           height={200}
@@ -171,9 +181,9 @@ const OrbitingOuterPlanet = ({
       className={`absolute flex aspect-square h-[15%] items-center justify-center rounded-full ${className}`}
     >
       <div className="h-full w-full animate-orbit-slow-reverse">
-        <button className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
+        <div className="absolute top-full left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg bg-slate-700 py-1 px-4 text-2xl text-white">
           {title}
-        </button>
+        </div>
         <Image
           src={image}
           height={200}
@@ -190,13 +200,18 @@ const PlanetSlider = ({
   title,
   planetImage,
   animation,
+  links,
 }: {
   title: string;
   planetImage: string;
   animation: string;
+  links: string;
 }) => {
   return (
-    <div className="relative h-20 w-full max-w-sm rounded-full border-4 border-slate-500 shadow-md">
+    <Link
+      href={links}
+      className="relative h-20 w-full max-w-sm rounded-full border-4 border-slate-500 shadow-md"
+    >
       <span className="absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 font-prompt text-4xl font-bold tracking-[2px] text-slate-500">
         {title}
       </span>
@@ -207,7 +222,7 @@ const PlanetSlider = ({
         alt="planet"
         className={`absolute top-1/2 left-0 -translate-y-1/2 translate-x-[10%] ${animation}`}
       />
-    </div>
+    </Link>
   );
 };
 
