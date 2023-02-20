@@ -4,6 +4,9 @@ import { FaPlayCircle } from "react-icons/fa";
 import { BiSkipNext } from "react-icons/bi";
 import { useSpringCarousel } from "react-spring-carousel";
 import { ReactSpringCarouselItem } from "react-spring-carousel/dist/types/types";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 
 const SONGS = [
   {
@@ -79,6 +82,12 @@ const SONGS = [
 ];
 
 const Music = () => {
+  const router = useRouter();
+
+  const { id } = router.query;
+
+  const dispayedSong = id && SONGS.find((song) => song.id === Number(id));
+
   return (
     <div className="h-screen w-screen overflow-auto bg-gray-200 pt-16">
       <div className="mx-auto flex h-20 w-9/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg">
@@ -102,7 +111,73 @@ const Music = () => {
         <h1 className="text-4xl">Songs</h1>
         <Carousel Songs={SONGS} />
       </div>
+
+      {id && dispayedSong && (
+        <div className="absolute top-1/2 left-1/2 z-50 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-black/70 shadow-lg">
+          <div className="relative h-[95%] w-1/2 rounded-lg bg-white text-center shadow-lg">
+            <Link href="/music">
+              <div className="absolute right-0">Exit</div>
+            </Link>
+            <div className="flex h-full w-full flex-col items-center justify-center">
+              <Image
+                src={dispayedSong.image}
+                alt="Album cover"
+                width={300}
+                height={300}
+                draggable={false}
+                className="rounded-sm"
+              />
+
+              <div>
+                <div className="text-4xl font-bold">{dispayedSong.title}</div>
+                <div className="my-2 text-3xl">-{dispayedSong.artist}</div>
+              </div>
+              <div className="text-3xl">Album: {dispayedSong.album}</div>
+
+              <div className="mt-4 flex">
+                <div className="relative inline-flex">
+                  <StarRating rating={2} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+};
+
+const StarRating = ({ rating }: { rating: number }) => {
+  type Star = "full" | "half" | "empty";
+
+  let stars: Star[] = Array(Math.floor(rating / 2)).fill("full");
+
+  if (rating % 2 !== 0) stars.push("half");
+
+  if (stars.length < 5)
+    stars = stars.concat(Array(5 - stars.length).fill("empty"));
+
+  const width: Record<Star, string> = {
+    full: "w-full",
+    half: "w-1/2",
+    empty: "w-0",
+  };
+
+  return (
+    <>
+      {stars.map((star, index) => (
+        <div className="relative inline-flex" key={index}>
+          <div
+            className={`${width[star]} absolute inline-flex h-11 overflow-hidden`}
+          >
+            <AiFillStar className={`h-10 w-10 flex-shrink-0 fill-blue-500`} />
+          </div>
+          <div className="relative inline-flex">
+            <AiOutlineStar className={`h-10 w-10`} />
+          </div>
+        </div>
+      ))}
+    </>
   );
 };
 
@@ -110,7 +185,7 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
-    <div>
+    <Link href={`/music?id=${song.id}`}>
       <div
         className="relative mr-[100px] flex h-96 w-96 flex-shrink-0 flex-col items-center justify-center rounded-md bg-slate-800 text-2xl text-white shadow-md"
         key={song.id}
@@ -140,7 +215,7 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
       <div className="mt-4 text-2xl">{song.title}</div>
       <div className="text-xl">{song.artist}</div>
       {song.id}
-    </div>
+    </Link>
   );
 };
 
