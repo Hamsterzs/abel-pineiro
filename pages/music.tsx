@@ -2,8 +2,6 @@ import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { FaPlayCircle } from "react-icons/fa";
 import { BiSkipNext } from "react-icons/bi";
-import { useSpringCarousel } from "react-spring-carousel";
-import { ReactSpringCarouselItem } from "react-spring-carousel/dist/types/types";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -90,26 +88,37 @@ const Music = () => {
 
   return (
     <div className="h-screen w-screen overflow-auto bg-gray-200 pt-16">
-      <div className="mx-auto flex h-20 w-9/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg">
-        <div className="ml-6 mr-auto text-2xl">
-          <div className="text-2xl font-bold">{SONGS[0].title}</div>
-          <div className="text-xl">{SONGS[0].artist}</div>
+      <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg lg:w-9/12">
+        <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
+          <div className="w-full truncate text-lg font-bold lg:text-2xl">
+            {SONGS[0].title}
+          </div>
+          <div className="w-full truncate text-base lg:text-xl">
+            {SONGS[0].artist}
+          </div>
         </div>
 
-        <div className="flex">
-          <BiSkipNext className="h-[60px] w-[60px] rotate-180 text-slate-500" />
-          <FaPlayCircle className="h-[60px] w-[60px] text-slate-500" />
-          <BiSkipNext className="mr-auto h-[60px] w-[60px] text-slate-500" />
+        <div className="flex items-center">
+          <BiSkipNext className="h-10 w-10 rotate-180 text-slate-500 lg:h-[60px] lg:w-[60px]" />
+          <FaPlayCircle className="h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
+          <BiSkipNext className="mr-auto h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
         </div>
 
-        <div className="mr-4 ml-auto rounded-full bg-blue-500 px-6 py-2 text-lg font-bold text-white shadow-md">
+        <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-sm font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
           My last song
         </div>
       </div>
 
-      <div className="mx-auto mt-16 w-9/12">
-        <h1 className="text-4xl">Songs</h1>
-        <Carousel Songs={SONGS} />
+      <div className="container mx-auto mt-16">
+        <div className="my-8 flex gap-12">
+          <h1 className="ml-auto text-4xl">Songs</h1>
+          <h1 className="mr-auto text-4xl">Filter</h1>
+        </div>
+        <div className="bg mb-20 grid grid-cols-2 place-content-center items-center gap-2 px-4 xl:grid-cols-3 3xl:grid-cols-4">
+          {SONGS.map((song) => (
+            <Vinyl song={song} key={song.id} />
+          ))}
+        </div>
       </div>
 
       {id && dispayedSong && (
@@ -185,9 +194,12 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
-    <Link href={`/music?id=${song.id}`}>
+    <Link
+      href={`/music?id=${song.id}`}
+      className="flex flex-col items-center justify-center"
+    >
       <div
-        className="relative mr-[100px] flex h-96 w-96 flex-shrink-0 flex-col items-center justify-center rounded-md bg-slate-800 text-2xl text-white shadow-md"
+        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md bg-slate-800 text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-80 4xl:w-80"
         key={song.id}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -196,124 +208,35 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
           src={song.image}
           alt="Album cover"
           fill
-          className="z-10 my-auto mx-auto rounded-md"
+          className="z-10 rounded-md"
           draggable={false}
         />
-        <Image
-          src="/vinyl.png"
-          alt="vinyl"
-          className={`absolute left-full top-5 transition-transform duration-500  ${
+
+        <div
+          className={`absolute left-full top-5 aspect-square w-[90%] transition-transform duration-500  ${
             isHovered ? "-translate-x-1/2" : "-translate-x-[80%]"
           } 
           ${isHovered ? "rotate-90" : "rotate-0"}
           `}
-          width={350}
-          height={350}
-          draggable={false}
-        />
-      </div>
-      <div className="mt-4 text-2xl">{song.title}</div>
-      <div className="text-xl">{song.artist}</div>
-      {song.id}
-    </Link>
-  );
-};
-
-const Carousel = ({ Songs }: { Songs: typeof SONGS }) => {
-  const [progress, setProgress] = React.useState(0);
-
-  const {
-    carouselFragment,
-    getCurrentActiveItem,
-    slideToItem,
-    useListenToCustomEvent,
-  } = useSpringCarousel({
-    items: Songs.map((song) => ({
-      id: song.id.toString(),
-      renderItem: <Vinyl song={song} key={song.id} />,
-    })),
-    itemsPerSlide: 3,
-    springConfig: { mass: 2, tension: 300, friction: 80 },
-    shouldResizeOnWindowResize: true,
-  });
-
-  const currentBatchContainsLast = (currentActiveItem: number) =>
-    currentActiveItem + 3 - 1 >= Songs.length - 1;
-
-  const currentBatchContainsFirst = (currentActiveItem: number) =>
-    currentActiveItem <= 0;
-
-  const showIndex = () => {
-    const currentActiveItem = getCurrentActiveItem();
-
-    if (currentBatchContainsLast(currentActiveItem.index)) return Songs.length;
-
-    if (currentBatchContainsFirst(currentActiveItem.index)) return 1;
-
-    return currentActiveItem.index + 1;
-  };
-
-  useListenToCustomEvent((event) => {
-    if (event.eventName === "onSlideStartChange") {
-      if (currentBatchContainsLast(event.nextItem.index))
-        return setProgress(100);
-
-      setProgress(((event.nextItem.index + 1) / Songs.length) * 100);
-    }
-  });
-
-  const getNextBatch = () => {
-    if (currentBatchContainsLast(getCurrentActiveItem().index)) return;
-
-    const currentActiveItem = getCurrentActiveItem();
-
-    const nextBatch = Math.ceil(currentActiveItem.index / 3) + 1;
-
-    const nextTarget = nextBatch * 3;
-
-    slideToItem(nextTarget >= Songs.length - 1 ? Songs.length - 1 : nextTarget);
-  };
-
-  const getPrevBatch = () => {
-    const currentActiveItem = getCurrentActiveItem();
-
-    const prevBatch = Math.ceil(currentActiveItem.index / 3) - 1;
-
-    const prevTarget = prevBatch * 3;
-
-    slideToItem(prevTarget < 0 ? 0 : prevTarget);
-  };
-
-  return (
-    <div className="relative">
-      <button
-        onClick={getPrevBatch}
-        className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-[140%]"
-      >
-        <BiSkipNext className="h-20 w-20 rotate-180 text-slate-500" />
-      </button>
-      <div className="relative flex w-full gap-20 overflow-hidden py-4">
-        <div className="flex w-full gap-20 overflow-hidden scroll-smooth py-4">
-          {carouselFragment}
+        >
+          <Image
+            src="/vinyl.png"
+            alt="vinyl"
+            className="hidden md:block"
+            draggable={false}
+            fill
+          />
         </div>
       </div>
-      <button
-        onClick={getNextBatch}
-        className="absolute top-1/2 left-full -translate-y-1/2 translate-x-[140%]"
-      >
-        <BiSkipNext className="h-20 w-20 text-slate-500" />
-      </button>
 
-      <div className="h-4 rounded-full bg-gray-500/30 shadow-2xl ">
-        <div
-          className="h-full rounded-full bg-blue-500 transition-all duration-500"
-          style={{
-            width: `${progress}%`,
-          }}
-        ></div>
-        {showIndex()}:00 / {Songs.length}:00
+      <div className="w-full truncate text-ellipsis text-center">
+        <div className="mx-auto mt-4 text-lg font-bold lg:text-2xl">
+          {song.title}
+        </div>
+        <div className="lg:text-xl">{song.artist}</div>
+        {song.id}
       </div>
-    </div>
+    </Link>
   );
 };
 
