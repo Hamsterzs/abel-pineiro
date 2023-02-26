@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPlayCircle } from "react-icons/fa";
 import { BiSkipNext } from "react-icons/bi";
 import { useSpringCarousel } from "react-spring-carousel";
@@ -80,6 +80,103 @@ const SONGS = [
     id: 10,
   },
 ];
+const ScrollCar = () => {
+  const [current, setCurrent] = useState(0);
+  const [indexInput, setIndexInput] = useState(1);
+
+  const car = useRef<HTMLDivElement>(null);
+
+  const scrollHere = (index: number) => {
+    if (!car.current) return;
+
+    const child = car.current.children[index] as HTMLDivElement;
+
+    const scrollWidth = car.current.scrollWidth;
+    const scrollLeft = car.current.scrollLeft;
+    const clientWidth = car.current.clientWidth;
+
+    if (
+      Math.abs(scrollWidth - scrollLeft - clientWidth) < 10 &&
+      index > current
+    )
+      return console.log("End");
+
+    car.current.scrollLeft = child.offsetLeft;
+    setCurrent(index);
+  };
+
+  const scrollTo = (index: number) => {
+    const validIndex = index;
+    if (index < 0) index = 0;
+
+    if (index > SONGS.length - 1) index = SONGS.length - 1;
+
+    scrollHere(index);
+  };
+
+  useEffect(() => {
+    if (!car.current) return;
+
+    const carousel = car.current;
+
+    const handleScroll = () => {
+      const children = Array.from(carousel.children) as HTMLDivElement[];
+      const child = children.reduce(
+        (acc, child, index) => {
+          const offset = carousel.scrollLeft - child.offsetLeft;
+          if (Math.abs(offset) < acc.diff) return { diff: offset, index };
+
+          return acc;
+        },
+        { diff: Infinity, index: null } as {
+          diff: number;
+          index: number | null;
+        }
+      );
+
+      if (child.index === null) return;
+      setCurrent(child.index);
+    };
+
+    carousel.addEventListener("scroll", handleScroll);
+
+    return () => {
+      carousel.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  return (
+    <>
+      <div className="absolute top-0 left-0 flex gap-11">
+        <button onClick={() => scrollTo(current - 3)}>Dec</button>
+        <button onClick={() => scrollTo(current + 3)}>INC</button>
+        <div>Actual current {current}</div>
+        <input
+          type="number"
+          max={SONGS.length - 1}
+          min={0}
+          value={indexInput}
+          onChange={(e) => setIndexInput(parseInt(e.target.value))}
+        />
+        <button onClick={() => scrollTo(indexInput)}>Scroll</button>
+      </div>
+      <div
+        ref={car}
+        className="mx-auto flex h-72 w-[90%]  snap-x items-center gap-2 overflow-auto scroll-smooth bg-blue-300"
+      >
+        {SONGS.map((song) => (
+          <div
+            key={song.id}
+            className="h-40 w-40 flex-shrink-0 snap-start bg-red-300"
+            id={"" + song.id}
+          >
+            {song.id}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
 
 const Music = () => {
   const router = useRouter();
