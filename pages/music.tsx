@@ -5,6 +5,8 @@ import { BiSkipNext } from "react-icons/bi";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import { AnimatePresence, motion } from "framer-motion";
+import { Dialog } from "@headlessui/react";
 
 const SONGS = [
   {
@@ -87,29 +89,30 @@ const Music = () => {
   const dispayedSong = id && SONGS.find((song) => song.id === Number(id));
 
   return (
-    <div className="h-screen w-screen overflow-auto bg-gray-200 pt-16">
-      <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg lg:w-9/12">
-        <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
-          <div className="w-full truncate text-lg font-bold lg:text-2xl">
-            {SONGS[0].title}
+    <div className="h-screen w-screen overflow-y-auto overflow-x-hidden bg-gray-200 pt-6 xl:pt-16">
+      <div className="container mx-auto">
+        <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg">
+          <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
+            <div className="w-full truncate text-lg font-bold lg:text-2xl">
+              {SONGS[0].title}
+            </div>
+            <div className="w-full truncate text-base lg:text-xl">
+              {SONGS[0].artist}
+            </div>
           </div>
-          <div className="w-full truncate text-base lg:text-xl">
-            {SONGS[0].artist}
+
+          <div className="flex items-center">
+            <BiSkipNext className="h-10 w-10 rotate-180 text-slate-500 lg:h-[60px] lg:w-[60px]" />
+            <FaPlayCircle className="h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
+            <BiSkipNext className="mr-auto h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
           </div>
-        </div>
 
-        <div className="flex items-center">
-          <BiSkipNext className="h-10 w-10 rotate-180 text-slate-500 lg:h-[60px] lg:w-[60px]" />
-          <FaPlayCircle className="h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
-          <BiSkipNext className="mr-auto h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
-        </div>
-
-        <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-sm font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
-          My last song
+          <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-sm font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
+            My last song
+          </div>
         </div>
       </div>
-
-      <div className="container mx-auto mt-16">
+      <div className="container mx-auto xl:mt-16">
         <div className="my-8 flex gap-12">
           <h1 className="ml-auto text-4xl">Songs</h1>
           <h1 className="mr-auto text-4xl">Filter</h1>
@@ -121,37 +124,61 @@ const Music = () => {
         </div>
       </div>
 
-      {id && dispayedSong && (
-        <div className="absolute top-1/2 left-1/2 z-50 flex h-full w-full -translate-x-1/2 -translate-y-1/2 items-center justify-center bg-black/70 shadow-lg">
-          <div className="relative h-[95%] w-1/2 rounded-lg bg-white text-center shadow-lg">
-            <Link href="/music">
-              <div className="absolute right-0">Exit</div>
-            </Link>
-            <div className="flex h-full w-full flex-col items-center justify-center">
-              <Image
-                src={dispayedSong.image}
-                alt="Album cover"
-                width={300}
-                height={300}
-                draggable={false}
-                className="rounded-sm"
-              />
+      <AnimatePresence>
+        {!!id && !!dispayedSong && (
+          <Dialog
+            open={!!id && !!dispayedSong}
+            onClose={() => router.push("music")}
+            unmount
+          >
+            {/* The backdrop, rendered as a fixed sibling to the panel container */}
+            <motion.div
+              className="fixed inset-0 z-40 bg-black/75"
+              aria-hidden="true"
+              animate={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
+              exit={{ opacity: 0 }}
+            />
 
-              <div>
-                <div className="text-4xl font-bold">{dispayedSong.title}</div>
-                <div className="my-2 text-3xl">-{dispayedSong.artist}</div>
-              </div>
-              <div className="text-3xl">Album: {dispayedSong.album}</div>
+            <Dialog.Panel className="relative">
+              <motion.div
+                initial={{ top: "150%" }}
+                animate={{ top: "50%" }}
+                exit={{ top: "150%" }}
+                className="xl:1/2 fixed top-1/2 left-1/2 z-50 h-[95%] w-[98%] -translate-y-1/2 -translate-x-1/2 rounded-lg bg-white text-center shadow-lg lg:w-3/4 xl:max-w-[1200px]"
+              >
+                <Link href="/music">
+                  <div className="absolute right-0">Exit</div>
+                </Link>
+                <div className="flex h-full w-full flex-col items-center justify-center">
+                  <Image
+                    src={dispayedSong.image}
+                    alt="Album cover"
+                    width={300}
+                    height={300}
+                    draggable={false}
+                    className="rounded-sm"
+                  />
 
-              <div className="mt-4 flex">
-                <div className="relative inline-flex">
-                  <StarRating rating={2} />
+                  <div>
+                    <Dialog.Title className="text-4xl font-bold">
+                      {dispayedSong.title}
+                    </Dialog.Title>
+                    <div className="my-2 text-3xl">-{dispayedSong.artist}</div>
+                  </div>
+                  <div className="text-3xl">Album: {dispayedSong.album}</div>
+
+                  <div className="mt-4 flex">
+                    <div className="relative inline-flex">
+                      <StarRating rating={9} />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+              </motion.div>
+            </Dialog.Panel>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
