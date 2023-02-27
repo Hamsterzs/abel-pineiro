@@ -7,6 +7,7 @@ import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
+import Head from "next/head";
 
 const SONGS = [
   {
@@ -90,6 +91,13 @@ const Music = () => {
 
   return (
     <div className="h-screen w-screen overflow-y-auto overflow-x-hidden bg-gray-200 pt-6 xl:pt-16">
+      <Head>
+        <title>Music</title>
+        <meta
+          name="description"
+          content="Abel Pineiro's favorite Songs, Artists and Albums."
+        />
+      </Head>
       <div className="container mx-auto">
         <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg">
           <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
@@ -226,7 +234,7 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
       className="flex flex-col items-center justify-center"
     >
       <div
-        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md bg-slate-800 text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-80 4xl:w-80"
+        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-80 4xl:w-80"
         key={song.id}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -234,7 +242,8 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
         <Image
           src={song.image}
           alt="Album cover"
-          fill
+          width={350}
+          height={350}
           className="z-10 rounded-md"
           draggable={false}
         />
@@ -251,7 +260,8 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
             alt="vinyl"
             className="hidden md:block"
             draggable={false}
-            fill
+            width={350}
+            height={350}
           />
         </div>
       </div>
