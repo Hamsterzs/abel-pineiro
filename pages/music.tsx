@@ -80,6 +80,63 @@ const SONGS = [
     image: "/beer-bongs.jpg",
     id: 10,
   },
+
+  {
+    title: "NASA",
+    artist: "Ariana Grande",
+    album: "Thank you next",
+    image: "/thank-you-next.jpg",
+    id: 7,
+  },
+  {
+    title: "Na Na Na",
+    artist: "My Chemical Romance",
+    album: "Danger Days: The True Lives of the Fabulous Killjoys",
+    image: "/danger-days.jpeg",
+    id: 8,
+  },
+  {
+    title: "The long and winding road",
+    artist: "The Beatles",
+    album: "Let It Be",
+    image: "/LetItBe.jpg",
+    id: 9,
+  },
+  {
+    title: "92 Explorer",
+    artist: "Post Malone",
+    album: "Beerbongs & Bentleys",
+    image: "/beer-bongs.jpg",
+    id: 10,
+  },
+  {
+    title: "NASA",
+    artist: "Ariana Grande",
+    album: "Thank you next",
+    image: "/thank-you-next.jpg",
+    id: 7,
+  },
+  {
+    title: "Na Na Na",
+    artist: "My Chemical Romance",
+    album: "Danger Days: The True Lives of the Fabulous Killjoys",
+    image: "/danger-days.jpeg",
+    id: 8,
+  },
+  {
+    title: "The long and winding road",
+    artist: "The Beatles",
+    album: "Let It Be",
+    image: "/LetItBe.jpg",
+    id: 9,
+  },
+  {
+    title: "92 Explorer",
+    artist: "Post Malone",
+    album: "Beerbongs & Bentleys",
+    image: "/beer-bongs.jpg",
+    id: 10,
+  },
 ];
 
 const Music = () => {
@@ -89,8 +146,38 @@ const Music = () => {
 
   const dispayedSong = id && SONGS.find((song) => song.id === Number(id));
 
+  const [scrollPercentage, setScrollPercentage] = React.useState(0);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+
+    if (!scrollContainer) return;
+
+    const scrollListener = () => {
+      if (!scrollRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+
+      if (scrollHeight === clientHeight) return setScrollPercentage(100);
+
+      const scrollPosition = (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+      setScrollPercentage(Math.ceil(scrollPosition));
+    };
+
+    scrollListener();
+
+    scrollContainer.addEventListener("scroll", scrollListener);
+
+    return () => {
+      scrollContainer.removeEventListener("scroll", scrollListener);
+    };
+  }, []);
+
   return (
-    <div className="h-screen w-screen overflow-y-auto overflow-x-hidden bg-gray-200 pt-6 xl:pt-16">
+    <div className="h-screen w-screen overflow-hidden bg-gray-200 pt-6">
       <Head>
         <title>Music</title>
         <meta
@@ -99,7 +186,7 @@ const Music = () => {
         />
       </Head>
       <div className="container mx-auto">
-        <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg">
+        <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
             <div className="w-full truncate text-lg font-bold lg:text-2xl">
               {SONGS[0].title}
@@ -120,12 +207,38 @@ const Music = () => {
           </div>
         </div>
       </div>
-      <div className="container mx-auto xl:mt-16">
-        <div className="my-8 flex gap-12">
-          <h1 className="ml-auto text-4xl">Songs</h1>
-          <h1 className="mr-auto text-4xl">Filter</h1>
+
+      <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)]">
+        <div className="container mx-auto flex h-28 w-11/12 flex-col items-center justify-center gap-2 overflow-hidden md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
+          <div className="mb-2 flex w-full justify-between">
+            <h1 className="text-4xl">Songs</h1>
+            <h1 className="text-4xl">Filter</h1>
+          </div>
+          <div className="flex w-full flex-col justify-center">
+            <div className="h-4 overflow-hidden rounded-full bg-gray-500/30">
+              <motion.div
+                animate={{
+                  width: `${scrollPercentage}%`,
+                  opacity: scrollPercentage < 3 ? 0 : 1,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  mass: 0.2,
+                  damping: 7,
+                }}
+                className="h-full w-32 overflow-hidden rounded-full bg-blue-500"
+              ></motion.div>
+            </div>
+            {Math.ceil((scrollPercentage * SONGS.length) / 100)}:00/
+            {SONGS.length}:00
+          </div>
         </div>
-        <div className="bg mb-20 grid grid-cols-2 place-content-center items-center gap-2 px-4 xl:grid-cols-3 3xl:grid-cols-4">
+
+        <div
+          ref={scrollRef}
+          className="scrollbar-hide grid h-[calc(100%-3rem)] grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
+        >
           {SONGS.map((song) => (
             <Vinyl song={song} key={song.id} />
           ))}
@@ -234,7 +347,7 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
       className="flex flex-col items-center justify-center"
     >
       <div
-        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-80 4xl:w-80"
+        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
         key={song.id}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
