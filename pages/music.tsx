@@ -186,36 +186,36 @@ const Music = () => {
         />
       </Head>
       <div className="container mx-auto">
-        <div className="mx-auto flex h-20 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
-          <div className="ml-6 mr-auto w-1/2 text-2xl lg:w-auto">
-            <div className="w-full truncate text-lg font-bold lg:text-2xl">
+        <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
+          <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
+            <div className="w-full truncate text-sm font-bold md:text-lg lg:text-2xl">
               {SONGS[0].title}
             </div>
-            <div className="w-full truncate text-base lg:text-xl">
+            <div className="w-full truncate text-xs md:text-base lg:text-xl">
               {SONGS[0].artist}
             </div>
           </div>
 
           <div className="flex items-center">
-            <BiSkipNext className="h-10 w-10 rotate-180 text-slate-500 lg:h-[60px] lg:w-[60px]" />
-            <FaPlayCircle className="h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
-            <BiSkipNext className="mr-auto h-10 w-10 text-slate-500 lg:h-[60px] lg:w-[60px]" />
+            <BiSkipNext className="h-8 w-8 rotate-180 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
+            <FaPlayCircle className="h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
+            <BiSkipNext className="mr-auto h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
           </div>
 
-          <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-sm font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
+          <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-xs font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
             My last song
           </div>
         </div>
       </div>
 
       <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)]">
-        <div className="container mx-auto flex h-28 w-11/12 flex-col items-center justify-center gap-2 overflow-hidden md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
-          <div className="mb-2 flex w-full justify-between">
-            <h1 className="text-4xl">Songs</h1>
-            <h1 className="text-4xl">Filter</h1>
+        <div className="container mx-auto flex w-11/12 flex-col items-center justify-center gap-2 overflow-hidden py-2 md:w-[70%] md:py-4 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
+          <div className="flex w-full justify-between md:mb-2">
+            <h1 className="text-lg lg:text-4xl">Songs</h1>
+            <h1 className="text-lg lg:text-4xl">Filter</h1>
           </div>
           <div className="flex w-full flex-col justify-center">
-            <div className="h-4 overflow-hidden rounded-full bg-gray-500/30">
+            <div className="h-3 overflow-hidden rounded-full bg-gray-500/30">
               <motion.div
                 animate={{
                   width: `${scrollPercentage}%`,
@@ -347,7 +347,7 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
       className="flex flex-col items-center justify-center"
     >
       <div
-        className="relative flex h-40 w-40 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
+        className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
         key={song.id}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -379,11 +379,11 @@ const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
         </div>
       </div>
 
-      <div className="w-full truncate text-ellipsis text-center">
-        <div className="mx-auto mt-4 text-lg font-bold lg:text-2xl">
+      <div className="w-4/5 truncate text-ellipsis text-center md:w-full">
+        <div className="mx-auto mt-4 font-bold md:text-lg lg:text-2xl">
           {song.title}
         </div>
-        <div className="lg:text-xl">{song.artist}</div>
+        <div className="text-sm md:text-base lg:text-xl">{song.artist}</div>
         {song.id}
       </div>
     </Link>
