@@ -65,6 +65,7 @@ module.exports = {
       fontFamily: {
         abel: ["var(--font-abel)", ...fontFamily.sans],
         prompt: ["var(--font-prompt)", ...fontFamily.sans],
+        fjalla: ["var(--font-fjalla)", ...fontFamily.sans],
       },
     },
   },

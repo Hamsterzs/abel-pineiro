@@ -8,6 +8,8 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import Head from "next/head";
+import { NextPage } from "next";
+import { fjalla } from "./_app";
 
 const SONGS = [
   {
@@ -177,7 +179,7 @@ const Music = () => {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gray-200 pt-6">
+    <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
       <Head>
         <title>Music</title>
         <meta
@@ -188,7 +190,7 @@ const Music = () => {
       <div className="container mx-auto">
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
-            <div className="w-full truncate text-sm font-bold md:text-lg lg:text-2xl">
+            <div className="w-full truncate font-fjalla text-sm font-bold md:text-lg lg:text-2xl">
               {SONGS[0].title}
             </div>
             <div className="w-full truncate text-xs md:text-base lg:text-xl">
@@ -249,7 +251,7 @@ const Music = () => {
         {!!id && !!dispayedSong && (
           <Dialog
             open={!!id && !!dispayedSong}
-            onClose={() => router.push("music")}
+            onClose={() => router.push("/music")}
             unmount
           >
             {/* The backdrop, rendered as a fixed sibling to the panel container */}
@@ -266,32 +268,41 @@ const Music = () => {
                 initial={{ top: "150%" }}
                 animate={{ top: "50%" }}
                 exit={{ top: "150%" }}
-                className="xl:1/2 fixed top-1/2 left-1/2 z-50 h-[95%] w-[98%] -translate-y-1/2 -translate-x-1/2 rounded-lg bg-white text-center shadow-lg lg:w-3/4 xl:max-w-[1200px]"
+                className="xl:1/2 scrollbar-hide fixed top-1/2 left-1/2 z-50 h-[95%] w-[98%] -translate-y-1/2 -translate-x-1/2 overflow-y-auto rounded-lg bg-gray-300 text-center shadow-lg lg:w-3/4 xl:max-w-[1200px]"
               >
                 <Link href="/music">
                   <div className="absolute right-0">Exit</div>
                 </Link>
-                <div className="flex h-full w-full flex-col items-center justify-center">
-                  <Image
-                    src={dispayedSong.image}
-                    alt="Album cover"
-                    width={300}
-                    height={300}
-                    draggable={false}
-                    className="rounded-sm"
-                  />
-
-                  <div>
-                    <Dialog.Title className="text-4xl font-bold">
-                      {dispayedSong.title}
-                    </Dialog.Title>
-                    <div className="my-2 text-3xl">-{dispayedSong.artist}</div>
-                  </div>
-                  <div className="text-3xl">Album: {dispayedSong.album}</div>
-
-                  <div className="mt-4 flex">
-                    <div className="relative inline-flex">
+                <div className="flex h-full w-full flex-col items-center">
+                  <div className="my-auto flex h-[90%] w-[90%] flex-col rounded-md border-2 border-white text-white">
+                    <Image
+                      src="/black-texture.jpg"
+                      fill
+                      alt="Vinyl"
+                      className="-z-30"
+                    />
+                    <div
+                      className={`${fjalla.variable} mt-auto px-4 font-fjalla`}
+                    >
+                      <div className="text-6xl">{dispayedSong.title}</div>
+                      <div className="my-8 text-4xl">{dispayedSong.album}</div>
+                    </div>
+                    <div className="mb-auto">
                       <StarRating rating={9} />
+                    </div>
+                    <div className="mx-auto w-3/4">
+                      <iframe
+                        style={{ borderRadius: "12px" }}
+                        src="https://open.spotify.com/embed/track/65FftemJ1DbbZ45DUfHJXE?utm_source=generator"
+                        width="100%"
+                        height="320"
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                      ></iframe>
+                    </div>
+                    <div className="mt-auto mb-20 text-2xl">
+                      <div>Album: {dispayedSong.album}</div>
+                      <div>Artist: {dispayedSong.artist}</div>
+                      <div>released: 01/02/1999</div>
                     </div>
                   </div>
                 </div>
@@ -327,7 +338,7 @@ const StarRating = ({ rating }: { rating: number }) => {
           <div
             className={`${width[star]} absolute inline-flex h-11 overflow-hidden`}
           >
-            <AiFillStar className={`h-10 w-10 flex-shrink-0 fill-blue-500`} />
+            <AiFillStar className={`h-10 w-10 flex-shrink-0 fill-white`} />
           </div>
           <div className="relative inline-flex">
             <AiOutlineStar className={`h-10 w-10`} />

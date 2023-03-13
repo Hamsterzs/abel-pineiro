@@ -1,28 +1,21 @@
+import { motion } from "framer-motion";
 import { InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
-// artificial delay to test loading state
+const Test = () => {
+  const [show, setShow] = React.useState(false);
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const getServerSideProps = async () => {
-  await wait(5000);
-  return {
-    props: {
-      message: "Hello World",
-    },
-  };
-};
-
-const Test = (
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) => {
   return (
-    <div>
-      {props.message}
-      <Link href="/test">test</Link>
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
+      <h1 className="font-abel text-7xl">This is test</h1>
+      {show && (
+        <motion.div className="fixed top-0">
+          <h1 className="bg-red-50 font-abel text-7xl">This is test</h1>
+        </motion.div>
+      )}
+      <button onClick={() => setShow(!show)}>Show</button>
     </div>
   );
 };
