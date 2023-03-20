@@ -8,145 +8,43 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import Head from "next/head";
-import { NextPage } from "next";
+import { InferGetStaticPropsType } from "next";
 import { fjalla } from "./_app";
+import prisma from "../lib/prisma";
 
-const SONGS = [
-  {
-    title: "Welcome to the black parade",
-    artist: "My Chemical Romance",
-    album: "The Black Parade",
-    image: "/black-parade.jpg",
-    id: 1,
-  },
-  {
-    title: "Golden Slumbers",
-    artist: "The Beatles",
-    album: "Abbey Road",
-    image: "/beatles.jpeg",
-    id: 2,
-  },
-  {
-    title: "Thank you next",
-    artist: "Ariana Grande",
-    album: "Thank you next",
-    image: "/thank-you-next.jpg",
-    id: 3,
-  },
-  {
-    title: "Candy Paint",
-    artist: "Post Malone",
-    album: "Beerbongs & Bentleys",
-    image: "/beer-bongs.jpg",
-    id: 4,
-  },
-  {
-    title: "Summertime",
-    artist: "My Chemical Romance",
-    album: "Danger Days: The True Lives of the Fabulous Killjoys",
-    image: "/danger-days.jpeg",
-    id: 5,
-  },
-  {
-    title: "You Never Give Me Your Money",
-    artist: "The Beatles",
-    album: "Abbey Road",
-    image: "/beatles.jpeg",
-    id: 6,
-  },
-  {
-    title: "NASA",
-    artist: "Ariana Grande",
-    album: "Thank you next",
-    image: "/thank-you-next.jpg",
-    id: 7,
-  },
-  {
-    title: "Na Na Na",
-    artist: "My Chemical Romance",
-    album: "Danger Days: The True Lives of the Fabulous Killjoys",
-    image: "/danger-days.jpeg",
-    id: 8,
-  },
-  {
-    title: "The long and winding road",
-    artist: "The Beatles",
-    album: "Let It Be",
-    image: "/LetItBe.jpg",
-    id: 9,
-  },
-  {
-    title: "92 Explorer",
-    artist: "Post Malone",
-    album: "Beerbongs & Bentleys",
-    image: "/beer-bongs.jpg",
-    id: 10,
-  },
+export const getStaticProps = async () => {
+  const allSongs = await prisma.song.findMany({
+    include: {
+      artist: {
+        select: {
+          name: true,
+        },
+      },
+      album: {
+        include: {
+          image: {
+            select: {
+              url: true,
+            },
+          },
+        },
+      },
+    },
+  });
 
-  {
-    title: "NASA",
-    artist: "Ariana Grande",
-    album: "Thank you next",
-    image: "/thank-you-next.jpg",
-    id: 7,
-  },
-  {
-    title: "Na Na Na",
-    artist: "My Chemical Romance",
-    album: "Danger Days: The True Lives of the Fabulous Killjoys",
-    image: "/danger-days.jpeg",
-    id: 8,
-  },
-  {
-    title: "The long and winding road",
-    artist: "The Beatles",
-    album: "Let It Be",
-    image: "/LetItBe.jpg",
-    id: 9,
-  },
-  {
-    title: "92 Explorer",
-    artist: "Post Malone",
-    album: "Beerbongs & Bentleys",
-    image: "/beer-bongs.jpg",
-    id: 10,
-  },
-  {
-    title: "NASA",
-    artist: "Ariana Grande",
-    album: "Thank you next",
-    image: "/thank-you-next.jpg",
-    id: 7,
-  },
-  {
-    title: "Na Na Na",
-    artist: "My Chemical Romance",
-    album: "Danger Days: The True Lives of the Fabulous Killjoys",
-    image: "/danger-days.jpeg",
-    id: 8,
-  },
-  {
-    title: "The long and winding road",
-    artist: "The Beatles",
-    album: "Let It Be",
-    image: "/LetItBe.jpg",
-    id: 9,
-  },
-  {
-    title: "92 Explorer",
-    artist: "Post Malone",
-    album: "Beerbongs & Bentleys",
-    image: "/beer-bongs.jpg",
-    id: 10,
-  },
-];
+  return {
+    props: {
+      songs: allSongs,
+    },
+  };
+};
 
-const Music = () => {
+const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
 
   const { id } = router.query;
 
-  const dispayedSong = id && SONGS.find((song) => song.id === Number(id));
+  const dispayedSong = id && songs.find((song) => song.id === id);
 
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
 
@@ -191,10 +89,10 @@ const Music = () => {
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
             <div className="w-full truncate font-fjalla text-sm font-bold md:text-lg lg:text-2xl">
-              {SONGS[0].title}
+              {songs[0].title}
             </div>
             <div className="w-full truncate text-xs md:text-base lg:text-xl">
-              {SONGS[0].artist}
+              {songs[0].artist.name}
             </div>
           </div>
 
@@ -232,8 +130,8 @@ const Music = () => {
                 className="h-full w-32 overflow-hidden rounded-full bg-blue-500"
               ></motion.div>
             </div>
-            {Math.ceil((scrollPercentage * SONGS.length) / 100)}:00/
-            {SONGS.length}:00
+            {Math.ceil((scrollPercentage * songs.length) / 100)}:00/
+            {songs.length}:00
           </div>
         </div>
 
@@ -241,8 +139,16 @@ const Music = () => {
           ref={scrollRef}
           className="scrollbar-hide grid h-[calc(100%-3rem)] grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
         >
-          {SONGS.map((song) => (
-            <Vinyl song={song} key={song.id} />
+          {songs.map((song) => (
+            <Vinyl
+              song={{
+                id: song.id,
+                artist: song.artist.name,
+                image: song.album.image.url,
+                title: song.title,
+              }}
+              key={song.id}
+            />
           ))}
         </div>
       </div>
@@ -285,7 +191,9 @@ const Music = () => {
                       className={`${fjalla.variable} mt-auto px-4 font-fjalla`}
                     >
                       <div className="text-6xl">{dispayedSong.title}</div>
-                      <div className="my-8 text-4xl">{dispayedSong.album}</div>
+                      <div className="my-8 text-4xl">
+                        {dispayedSong.album.title}
+                      </div>
                     </div>
                     <div className="mb-auto">
                       <StarRating rating={9} />
@@ -300,8 +208,8 @@ const Music = () => {
                       ></iframe>
                     </div>
                     <div className="mt-auto mb-20 text-2xl">
-                      <div>Album: {dispayedSong.album}</div>
-                      <div>Artist: {dispayedSong.artist}</div>
+                      <div>Album: {dispayedSong.album.title}</div>
+                      <div>Artist: {dispayedSong.artist.name}</div>
                       <div>released: 01/02/1999</div>
                     </div>
                   </div>
@@ -349,7 +257,16 @@ const StarRating = ({ rating }: { rating: number }) => {
   );
 };
 
-const Vinyl = ({ song }: { song: (typeof SONGS)[number] }) => {
+const Vinyl = ({
+  song,
+}: {
+  song: {
+    id: string;
+    image: string;
+    title: string;
+    artist: string;
+  };
+}) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (

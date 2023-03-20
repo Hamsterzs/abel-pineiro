@@ -1,6 +1,8 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Abel, Fjalla_One, Prompt, Varela_Round } from "@next/font/google";
+import { Abel, Fjalla_One, Prompt } from "@next/font/google";
+import { trpc } from "../utils/trpc";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const abel = Abel({
   subsets: ["latin"],
@@ -24,8 +26,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <main className={`${abel.variable} ${prompt.variable} ${fjalla.variable}`}>
       <Component {...pageProps} />
+      <ReactQueryDevtools />
     </main>
   );
 }
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);
