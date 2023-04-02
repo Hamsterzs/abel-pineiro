@@ -1,12 +1,15 @@
 import dbSongs from "../../db/songs";
-import { SongQueryValidator } from "../../db/songs/validator";
 import { procedure, router } from "../trpc";
+import dbAlbums from "../../db/albums";
+import { getValidator } from "../../schemas/queries";
 
-export const songRouter = router({
-  get: procedure.input(SongQueryValidator).query(({ input }) => {
-    return dbSongs.get(input);
+export const musicRouter = router({
+  get: procedure.input(getValidator).query(({ input }) => {
+    if (input.type === "albums") return dbAlbums.get(input.query);
+
+    return dbSongs.get(input.query);
   }),
 });
 
 // export type definition of API
-export type SongRouter = typeof songRouter;
+export type musicRouter = typeof musicRouter;

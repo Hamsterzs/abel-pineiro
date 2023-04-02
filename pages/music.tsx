@@ -14,13 +14,15 @@ import {
   InferGetServerSidePropsType,
 } from "next";
 import { fjalla } from "./_app";
-import dbSongs from "../db/songs";
+import dbSongs, { MusicData } from "../db/songs";
 import {
   DEFAULT_SONG_QUERY,
   SongQueryIn,
   SongQueryValidator,
 } from "../db/songs/validator";
 import { trpc } from "../utils/trpc";
+import { getValidator, GetValidator } from "../schemas/queries";
+import dbAlbums from "../db/albums";
 
 export const getServerSideProps: GetServerSideProps = async ({
   query: urlQuery,
@@ -30,15 +32,26 @@ export const getServerSideProps: GetServerSideProps = async ({
     order: urlQuery.order,
   };
 
-  const validatedQuery = SongQueryValidator.safeParse(query);
+  const validatedQuery = getValidator.safeParse({ type: urlQuery.type, query });
 
-  const allSongs = await dbSongs.get(
-    validatedQuery.success ? validatedQuery.data : DEFAULT_SONG_QUERY
-  );
+  if (!validatedQuery.success)
+    return {
+      props: {
+        songs: await dbSongs.get(DEFAULT_SONG_QUERY),
+      },
+    };
+
+  if (validatedQuery.data.type === "albums") {
+    return {
+      props: {
+        songs: await dbAlbums.get(validatedQuery.data.query),
+      },
+    };
+  }
 
   return {
     props: {
-      songs: allSongs,
+      songs: await dbSongs.get(validatedQuery.data.query),
     },
   };
 };
@@ -53,20 +66,21 @@ const Music = ({
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
   const [showComments, setShowComments] = React.useState(false);
 
-  const songsQuery = (() => {
-    const { order, sortBy } = router.query;
+  const musicQuery: GetValidator = (() => {
+    const { order, sortBy, type } = router.query;
 
-    const validatedQuery = SongQueryValidator.safeParse({
-      order,
-      sortBy,
+    const validatedQuery = getValidator.safeParse({
+      type,
+      query: { order, sortBy },
     });
 
-    if (!validatedQuery.success) return DEFAULT_SONG_QUERY;
+    if (!validatedQuery.success)
+      return { type: "songs", query: DEFAULT_SONG_QUERY };
 
     return validatedQuery.data;
   })();
 
-  const { data: songs } = trpc.songs.get.useQuery(songsQuery, {
+  const { data: songs } = trpc.music.get.useQuery(musicQuery, {
     initialData: initialSongs,
     staleTime: 1000 * 60 * 60 * 24,
     initialDataUpdatedAt: 1000 * 60 * 60 * 25,
@@ -118,12 +132,15 @@ const Music = ({
                 </Menu.Button>
               </div>
               <Menu.Items className="absolute left-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {["asc", "desc"].map((order) => (
+                {["songs", "albums"].map((order) => (
                   <div className="px-1 py-1" key={order}>
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          href={{ pathname: "/music", query: { order } }}
+                          href={{
+                            pathname: "/music",
+                            query: { ...musicQuery.query, type: order },
+                          }}
                           className={`${
                             active
                               ? "bg-violet-500 text-white"
@@ -155,7 +172,11 @@ const Music = ({
                           <Link
                             href={{
                               pathname: "/music",
-                              query: { ...songsQuery, order },
+                              query: {
+                                ...musicQuery.query,
+                                order,
+                                type: router.query.type,
+                              },
                             }}
                             className={`${
                               active
@@ -187,7 +208,11 @@ const Music = ({
                           <Link
                             href={{
                               pathname: "/music",
-                              query: { ...songsQuery, sortBy: dataKey },
+                              query: {
+                                ...musicQuery.query,
+                                sortBy: dataKey,
+                                type: router.query.type,
+                              },
                             }}
                             className={`${
                               active
@@ -229,7 +254,7 @@ const Music = ({
 
         <AnimatePresence mode="popLayout">
           <motion.div
-            key={JSON.stringify(songsQuery)}
+            key={JSON.stringify(musicQuery)}
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
@@ -287,7 +312,13 @@ const Music = ({
                 exit={{ top: "150%" }}
                 className="xl:1/2 scrollbar-hide fixed top-1/2 left-1/2 z-50 h-[95%] w-[98%] -translate-y-1/2 -translate-x-1/2 overflow-y-auto rounded-lg bg-gray-300 text-center shadow-lg lg:w-3/4 xl:max-w-[1200px]"
               >
-                <Link href="/music">
+                <Link
+                  href={{
+                    pathname: "/music",
+                    query: { ...router.query, id: undefined },
+                  }}
+                  shallow
+                >
                   <div className="absolute right-0">Exit</div>
                 </Link>
                 <div className="flex h-full w-full flex-col items-center">

@@ -1,6 +1,4 @@
-import { albumRouter } from "./routers/album";
-import { artistRouter } from "./routers/artist";
-import { songRouter } from "./routers/song";
+import { musicRouter } from "./routers/song";
 import { router } from "./trpc";
 
 /**
@@ -9,9 +7,7 @@ import { router } from "./trpc";
  * All routers added in /api/routers should be manually added here
  */
 export const appRouter = router({
-  songs: songRouter,
-  artists: artistRouter,
-  albums: albumRouter,
+  music: musicRouter,
 });
 
 // export type definition of API

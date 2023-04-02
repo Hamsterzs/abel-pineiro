@@ -9,8 +9,12 @@ export type MusicData = {
   image: string;
 };
 
-class Songs {
-  get = async (query: SongQueryOut): Promise<MusicData[]> => {
+interface dbSongs {
+  get: (query: SongQueryOut) => Promise<MusicData[]>;
+}
+
+class Songs implements dbSongs {
+  get = async (query: SongQueryOut) => {
     const songs = await prisma.song.findMany({
       include: {
         artist: {
