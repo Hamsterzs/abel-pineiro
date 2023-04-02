@@ -6,31 +6,28 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Menu } from "@headlessui/react";
 import Head from "next/head";
-import { InferGetStaticPropsType } from "next";
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import { fjalla } from "./_app";
-import prisma from "../lib/prisma";
+import dbSongs, { SongQuery } from "../db/songs";
+import { trpc } from "../utils/trpc";
 
-export const getStaticProps = async () => {
-  const allSongs = await prisma.song.findMany({
-    include: {
-      artist: {
-        select: {
-          name: true,
-        },
-      },
-      album: {
-        include: {
-          image: {
-            select: {
-              url: true,
-            },
-          },
-        },
-      },
-    },
-  });
+export const getServerSideProps: GetServerSideProps = async ({
+  query: urlQuery,
+}: GetServerSidePropsContext) => {
+  const defaultQuery: SongQuery = {
+    sortBy: "createdAt",
+    order: "asc",
+  };
+
+  const query = { ...defaultQuery, ...urlQuery };
+
+  const allSongs = await dbSongs.get(query);
 
   return {
     props: {
@@ -39,42 +36,36 @@ export const getStaticProps = async () => {
   };
 };
 
-const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Music = ({
+  songs: initialSongs,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
 
   const { id } = router.query;
 
-  const dispayedSong = id && songs.find((song) => song.id === id);
-
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
+  const [showComments, setShowComments] = React.useState(false);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const songsQuery = (() => {
+    const { order, sortBy } = router.query;
 
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-
-    if (!scrollContainer) return;
-
-    const scrollListener = () => {
-      if (!scrollRef.current) return;
-
-      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-
-      if (scrollHeight === clientHeight) return setScrollPercentage(100);
-
-      const scrollPosition = (scrollTop / (scrollHeight - clientHeight)) * 100;
-
-      setScrollPercentage(Math.ceil(scrollPosition));
+    const query: SongQuery = {
+      order: (order as "asc" | "desc") || "asc",
+      sortBy: (sortBy as "createdAt") || "createdAt",
     };
 
-    scrollListener();
+    return query;
+  })();
 
-    scrollContainer.addEventListener("scroll", scrollListener);
+  const { data: songs } = trpc.songs.get.useQuery(songsQuery, {
+    initialData: initialSongs,
+    staleTime: 1000 * 60 * 60 * 24,
+    initialDataUpdatedAt: 1000 * 60 * 60 * 25,
+  });
 
-    return () => {
-      scrollContainer.removeEventListener("scroll", scrollListener);
-    };
-  }, []);
+  const dispayedSong = id && songs?.find((song) => song.id === id);
+
+  if (!songs) return null;
 
   return (
     <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
@@ -92,7 +83,7 @@ const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
               {songs[0].title}
             </div>
             <div className="w-full truncate text-xs md:text-base lg:text-xl">
-              {songs[0].artist.name}
+              {songs[0].subTitle}
             </div>
           </div>
 
@@ -102,17 +93,109 @@ const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
             <BiSkipNext className="mr-auto h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
           </div>
 
-          <div className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-xs font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
+          <button className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-xs font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
             My last song
-          </div>
+          </button>
         </div>
       </div>
 
       <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)]">
-        <div className="container mx-auto flex w-11/12 flex-col items-center justify-center gap-2 overflow-hidden py-2 md:w-[70%] md:py-4 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
+        <div className="container mx-auto flex h-36 w-11/12 flex-col items-center justify-center gap-2 overflow-visible py-2 md:w-[70%] md:py-4 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="flex w-full justify-between md:mb-2">
-            <h1 className="text-lg lg:text-4xl">Songs</h1>
-            <h1 className="text-lg lg:text-4xl">Filter</h1>
+            <Menu as="div" className="relative inline-block text-left">
+              <div>
+                <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                  Options
+                </Menu.Button>
+              </div>
+              <Menu.Items className="absolute left-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {["asc", "desc"].map((order) => (
+                  <div className="px-1 py-1" key={order}>
+                    <Menu.Item>
+                      {({ active }) => (
+                        <Link
+                          href={{ pathname: "/music", query: { order } }}
+                          className={`${
+                            active
+                              ? "bg-violet-500 text-white"
+                              : "text-gray-900"
+                          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                          shallow={true}
+                        >
+                          {order}
+                        </Link>
+                      )}
+                    </Menu.Item>
+                  </div>
+                ))}
+              </Menu.Items>
+            </Menu>
+
+            <div>
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                    Options
+                  </Menu.Button>
+                </div>
+                <Menu.Items className="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  {["asc", "desc"].map((order) => (
+                    <div className="px-1 py-1" key={order}>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <Link
+                            href={{
+                              pathname: "/music",
+                              query: { ...songsQuery, order },
+                            }}
+                            className={`${
+                              active
+                                ? "bg-violet-500 text-white"
+                                : "text-gray-900"
+                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                            shallow
+                          >
+                            {order}
+                          </Link>
+                        )}
+                      </Menu.Item>
+                    </div>
+                  ))}
+                </Menu.Items>
+              </Menu>
+
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                    Options
+                  </Menu.Button>
+                </div>
+                <Menu.Items className="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  {["createdAt", "rating"].map((dataKey) => (
+                    <div className="px-1 py-1" key={dataKey}>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <Link
+                            href={{
+                              pathname: "/music",
+                              query: { ...songsQuery, sortBy: dataKey },
+                            }}
+                            className={`${
+                              active
+                                ? "bg-violet-500 text-white"
+                                : "text-gray-900"
+                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                            shallow
+                          >
+                            {dataKey}
+                          </Link>
+                        )}
+                      </Menu.Item>
+                    </div>
+                  ))}
+                </Menu.Items>
+              </Menu>
+            </div>
           </div>
           <div className="flex w-full flex-col justify-center">
             <div className="h-3 overflow-hidden rounded-full bg-gray-500/30">
@@ -135,29 +218,41 @@ const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
           </div>
         </div>
 
-        <div
-          ref={scrollRef}
-          className="scrollbar-hide grid h-[calc(100%-3rem)] grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
-        >
-          {songs.map((song) => (
-            <Vinyl
-              song={{
-                id: song.id,
-                artist: song.artist.name,
-                image: song.album.image.url,
-                title: song.title,
-              }}
-              key={song.id}
-            />
-          ))}
-        </div>
+        <AnimatePresence mode="popLayout">
+          <motion.div
+            key={JSON.stringify(songsQuery)}
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{
+              x: { type: "spring", stiffness: 300, damping: 30 },
+              opacity: { duration: 0.2 },
+            }}
+            className="h-[calc(100%-3rem)]"
+          >
+            <VinylsContainer setScrollPercentage={setScrollPercentage}>
+              {songs.map((song) => (
+                <Vinyl
+                  song={{
+                    id: song.id,
+                    title: song.title,
+                    subTitle: song.subTitle,
+                    image: song.image,
+                    rating: song.rating,
+                  }}
+                  key={song.id}
+                />
+              ))}
+            </VinylsContainer>
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <AnimatePresence>
         {!!id && !!dispayedSong && (
           <Dialog
             open={!!id && !!dispayedSong}
-            onClose={() => router.push("/music")}
+            onClose={() => router.push("/music", undefined, { shallow: true })}
             unmount
           >
             {/* The backdrop, rendered as a fixed sibling to the panel container */}
@@ -192,24 +287,67 @@ const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
                     >
                       <div className="text-6xl">{dispayedSong.title}</div>
                       <div className="my-8 text-4xl">
-                        {dispayedSong.album.title}
+                        {dispayedSong.subTitle}
                       </div>
                     </div>
+
                     <div className="mb-auto">
                       <StarRating rating={9} />
                     </div>
-                    <div className="mx-auto w-3/4">
-                      <iframe
-                        style={{ borderRadius: "12px" }}
-                        src="https://open.spotify.com/embed/track/65FftemJ1DbbZ45DUfHJXE?utm_source=generator"
-                        width="100%"
-                        height="320"
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                      ></iframe>
+
+                    <div className="mx-auto h-[400px] w-3/4">
+                      {!showComments ? (
+                        <div key={"showComments" + showComments}>
+                          <iframe
+                            style={{ borderRadius: "12px" }}
+                            src="https://open.spotify.com/embed/track/65FftemJ1DbbZ45DUfHJXE?utm_source=generator"
+                            width="100%"
+                            height="200"
+                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                          ></iframe>
+                          <div className="flex gap-3 py-8">
+                            <button className="rounded-lg bg-blue-500 px-4 py-2 text-white">
+                              Like
+                            </button>
+                            <button
+                              className="rounded-lg bg-blue-500 px-4 py-2 text-white"
+                              onClick={() => setShowComments(true)}
+                            >
+                              Comments
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <button
+                            className="rounded-lg bg-blue-500 px-4 py-2 text-white"
+                            onClick={() => setShowComments(false)}
+                          >
+                            Listen to Song
+                          </button>
+                          <div className="scrollbar-hide h-80 overflow-y-auto">
+                            {[
+                              "this is really good stuff",
+                              "Look at this",
+                              "This is a comment",
+                              "Look at this",
+                            ].map((comment) => (
+                              <div
+                                className="mb-2 rounded-lg bg-white py-4 pl-8 text-left text-black"
+                                key={comment}
+                              >
+                                <h3>John Doe</h3>
+                                <p>{comment}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
+
                     <div className="mt-auto mb-20 text-2xl">
-                      <div>Album: {dispayedSong.album.title}</div>
-                      <div>Artist: {dispayedSong.artist.name}</div>
+                      <div>Album: {dispayedSong.title}</div>
+                      <div>Artist: {dispayedSong.subTitle}</div>
                       <div>released: 01/02/1999</div>
                     </div>
                   </div>
@@ -223,7 +361,62 @@ const Music = ({ songs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   );
 };
 
-const StarRating = ({ rating }: { rating: number }) => {
+// Because the container would unmount, The event listner would break becuse the component was no longer there.
+// So we moved the container to a seperate component so that the useEffect would handle adding and removing the event listener
+const VinylsContainer = ({
+  children,
+  setScrollPercentage,
+}: {
+  children: React.ReactNode;
+  setScrollPercentage: (n: number) => void;
+}) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+
+    if (!scrollContainer) return;
+
+    const scrollListener = () => {
+      if (!scrollRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+
+      if (scrollHeight === clientHeight) return setScrollPercentage(100);
+
+      const scrollPosition = (scrollTop / (scrollHeight - clientHeight)) * 100;
+
+      setScrollPercentage(Math.ceil(scrollPosition));
+    };
+
+    scrollListener();
+
+    scrollContainer.addEventListener("scroll", scrollListener);
+
+    return () => {
+      scrollContainer.removeEventListener("scroll", scrollListener);
+    };
+  }, [setScrollPercentage]);
+
+  return (
+    <div
+      ref={scrollRef}
+      className="scrollbar-hide grid h-full grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
+    >
+      {children}
+    </div>
+  );
+};
+
+const StarRating = ({
+  rating,
+  size = 40,
+  color = "white",
+}: {
+  rating: number;
+  color?: string;
+  size?: number;
+}) => {
   type Star = "full" | "half" | "empty";
 
   let stars: Star[] = Array(Math.floor(rating / 2)).fill("full");
@@ -246,10 +439,13 @@ const StarRating = ({ rating }: { rating: number }) => {
           <div
             className={`${width[star]} absolute inline-flex h-11 overflow-hidden`}
           >
-            <AiFillStar className={`h-10 w-10 flex-shrink-0 fill-white`} />
+            <AiFillStar
+              className={`flex-shrink-0`}
+              style={{ width: size, height: size, fill: color }}
+            />
           </div>
           <div className="relative inline-flex">
-            <AiOutlineStar className={`h-10 w-10`} />
+            <AiOutlineStar style={{ width: size, height: size, fill: color }} />
           </div>
         </div>
       ))}
@@ -264,15 +460,18 @@ const Vinyl = ({
     id: string;
     image: string;
     title: string;
-    artist: string;
+    subTitle: string;
+    rating: number;
   };
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
+  const { query: activeQuery } = useRouter();
 
   return (
     <Link
-      href={`/music?id=${song.id}`}
+      href={{ pathname: "/music", query: { ...activeQuery, id: song.id } }}
       className="flex flex-col items-center justify-center"
+      shallow
     >
       <div
         className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
@@ -307,12 +506,14 @@ const Vinyl = ({
         </div>
       </div>
 
-      <div className="w-4/5 truncate text-ellipsis text-center md:w-full">
+      <div className="mb-4 w-4/5 truncate text-ellipsis text-center md:w-full">
         <div className="mx-auto mt-4 font-bold md:text-lg lg:text-2xl">
           {song.title}
         </div>
-        <div className="text-sm md:text-base lg:text-xl">{song.artist}</div>
-        {song.id}
+        <div className="text-sm md:text-base lg:text-xl">{song.subTitle}</div>
+        <div className="my-2">
+          <StarRating rating={song.rating} size={25} color="black" />
+        </div>
       </div>
     </Link>
   );

@@ -1,28 +1,11 @@
-import { z } from "zod";
-import prisma from "../../lib/prisma";
+import dbSongs, { SongQueryValidator } from "../../db/songs";
 import { procedure, router } from "../trpc";
 
 export const songRouter = router({
-  all: procedure.query(() =>
-    prisma.song.findMany({
-      include: {
-        artist: {
-          select: {
-            name: true,
-          },
-        },
-        album: {
-          include: {
-            image: {
-              select: {
-                url: true,
-              },
-            },
-          },
-        },
-      },
-    })
-  ),
+  get: procedure.input(SongQueryValidator).query(({ input }) => {
+    console.log("getting songs with ", input);
+    return dbSongs.get(input);
+  }),
 });
 
 // export type definition of API
