@@ -14,20 +14,27 @@ import {
   InferGetServerSidePropsType,
 } from "next";
 import { fjalla } from "./_app";
-import dbSongs, { SongQuery } from "../db/songs";
+import dbSongs from "../db/songs";
+import {
+  DEFAULT_SONG_QUERY,
+  SongQueryIn,
+  SongQueryValidator,
+} from "../db/songs/validator";
 import { trpc } from "../utils/trpc";
 
 export const getServerSideProps: GetServerSideProps = async ({
   query: urlQuery,
 }: GetServerSidePropsContext) => {
-  const defaultQuery: SongQuery = {
-    sortBy: "createdAt",
-    order: "asc",
+  const query: SongQueryIn = {
+    sortBy: urlQuery.sortBy,
+    order: urlQuery.order,
   };
 
-  const query = { ...defaultQuery, ...urlQuery };
+  const validatedQuery = SongQueryValidator.safeParse(query);
 
-  const allSongs = await dbSongs.get(query);
+  const allSongs = await dbSongs.get(
+    validatedQuery.success ? validatedQuery.data : DEFAULT_SONG_QUERY
+  );
 
   return {
     props: {
@@ -49,12 +56,14 @@ const Music = ({
   const songsQuery = (() => {
     const { order, sortBy } = router.query;
 
-    const query: SongQuery = {
-      order: (order as "asc" | "desc") || "asc",
-      sortBy: (sortBy as "createdAt") || "createdAt",
-    };
+    const validatedQuery = SongQueryValidator.safeParse({
+      order,
+      sortBy,
+    });
 
-    return query;
+    if (!validatedQuery.success) return DEFAULT_SONG_QUERY;
+
+    return validatedQuery.data;
   })();
 
   const { data: songs } = trpc.songs.get.useQuery(songsQuery, {
@@ -252,7 +261,14 @@ const Music = ({
         {!!id && !!dispayedSong && (
           <Dialog
             open={!!id && !!dispayedSong}
-            onClose={() => router.push("/music", undefined, { shallow: true })}
+            onClose={() => {
+              const newQuery = { ...router.query, id: undefined };
+              delete newQuery.id;
+
+              router.push({ pathname: "/music", query: newQuery }, undefined, {
+                shallow: true,
+              });
+            }}
             unmount
           >
             {/* The backdrop, rendered as a fixed sibling to the panel container */}

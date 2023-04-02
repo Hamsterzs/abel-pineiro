@@ -1,27 +1,5 @@
-import prisma from "../lib/prisma";
-import { z } from "zod";
-import { Song } from "@prisma/client";
-
-type SortByOptions = keyof Pick<Song, "createdAt" | "rating">;
-
-const sortByOptions: readonly SortByOptions[] = [
-  "createdAt",
-  "rating",
-] as const;
-
-export const SongQueryValidator = z.object({
-  sortBy: z.enum(
-    sortByOptions as [(typeof sortByOptions)[number], ...typeof sortByOptions]
-  ),
-  order: z.enum(["asc", "desc"]),
-});
-
-export type SongQuery = z.infer<typeof SongQueryValidator>;
-
-export const DEFAULT_SONG_QUERY: SongQuery = {
-  sortBy: "createdAt",
-  order: "desc",
-};
+import prisma from "../../lib/prisma";
+import { SongQueryOut } from "./validator";
 
 export type MusicData = {
   id: string;
@@ -32,7 +10,7 @@ export type MusicData = {
 };
 
 class Songs {
-  get: (query: SongQuery) => Promise<MusicData[]> = async (query) => {
+  get = async (query: SongQueryOut): Promise<MusicData[]> => {
     const songs = await prisma.song.findMany({
       include: {
         artist: {
