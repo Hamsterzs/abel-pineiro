@@ -17,10 +17,5 @@ export const SongQueryValidator = z.object({
   order: z.enum(["asc", "desc"]).catch("desc"),
 });
 
-export const DEFAULT_SONG_QUERY: SongQueryOut = {
-  sortBy: "createdAt",
-  order: "desc",
-};
-
 export type SongQueryIn = z.input<typeof SongQueryValidator>;
 export type SongQueryOut = z.infer<typeof SongQueryValidator>;

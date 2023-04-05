@@ -1,13 +1,6 @@
 import prisma from "../../lib/prisma";
-import { SongQueryOut } from "./validator";
-
-export type MusicData = {
-  id: string;
-  title: string;
-  subTitle?: string;
-  rating: number;
-  image: string;
-};
+import { MusicData } from "../types";
+import { SongQueryOut } from "./schema";
 
 interface dbSongs {
   get: (query: SongQueryOut) => Promise<MusicData[]>;

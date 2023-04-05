@@ -14,12 +14,17 @@ import {
   InferGetServerSidePropsType,
 } from "next";
 import { fjalla } from "./_app";
-import dbSongs, { MusicData } from "../db/songs";
-import { DEFAULT_SONG_QUERY, SongQueryIn } from "../db/songs/validator";
+import dbSongs from "../db/songs";
+import { SongQueryIn } from "../db/songs/schema";
 import { trpc } from "../utils/trpc";
-import { getValidator, GetValidator, GetValidatorIn } from "../schemas/queries";
+import {
+  getValidator,
+  GetValidator,
+  GetValidatorIn,
+} from "../server/Music/schema";
 import dbAlbums from "../db/albums";
-import { getMusic } from "../server/getMusic";
+import { getMusic } from "../server/Music";
+import { MusicData } from "../db/types";
 
 export const getServerSideProps: GetServerSideProps<{
   music: MusicData[];
@@ -53,18 +58,15 @@ const Music = ({ music: initialMusic }: InitialProps) => {
   const musicQuery: GetValidator = (() => {
     const { order, sortBy, type } = router.query;
 
-    const validatedQuery = getValidator.safeParse({
+    const validatedQuery = getValidator.parse({
       type,
       query: { order, sortBy },
     });
 
-    if (!validatedQuery.success)
-      return { type: "songs", query: DEFAULT_SONG_QUERY };
-
-    return validatedQuery.data;
+    return validatedQuery;
   })();
 
-  const { data: music, isFetching } = trpc.music.get.useQuery(musicQuery, {
+  const { data: music } = trpc.music.get.useQuery(musicQuery, {
     initialData: initialMusic,
     staleTime: 1000 * 60 * 60 * 24,
     initialDataUpdatedAt: 1000 * 60 * 60 * 25,

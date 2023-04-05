@@ -1,9 +1,10 @@
-import dbAlbums from "../db/albums";
-import { AlbumQueryOut } from "../db/albums/validator";
-import dbArtists from "../db/artists";
-import dbSongs, { MusicData } from "../db/songs";
-import { DEFAULT_SONG_QUERY, SongQueryOut } from "../db/songs/validator";
-import { GetValidatorIn, getValidator } from "../schemas/queries";
+import dbAlbums from "../../db/albums";
+import { AlbumQueryOut } from "../../db/albums/schema";
+import dbArtists from "../../db/artists";
+import dbSongs from "../../db/songs";
+import { SongQueryOut } from "../../db/songs/schema";
+import { MusicData } from "../../db/types";
+import { GetValidatorIn, getValidator } from "./schema";
 
 const getSongs = async (songQuery: SongQueryOut): Promise<MusicData[]> => {
   return dbSongs.get(songQuery);
@@ -18,11 +19,9 @@ const getArtists = async (albumQuery: AlbumQueryOut): Promise<MusicData[]> => {
 };
 
 export const getMusic = (musicQuery: GetValidatorIn): Promise<MusicData[]> => {
-  const validatedMusicQuery = getValidator.safeParse(musicQuery);
+  const validatedMusicQuery = getValidator.parse(musicQuery);
 
-  if (!validatedMusicQuery.success) return getSongs(DEFAULT_SONG_QUERY);
-
-  const { type, query } = validatedMusicQuery.data;
+  const { type, query } = validatedMusicQuery;
 
   if (type === "albums") return getAlbums(query);
 

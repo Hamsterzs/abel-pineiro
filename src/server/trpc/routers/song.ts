@@ -1,8 +1,8 @@
-import dbSongs from "../../db/songs";
+import dbSongs from "../../../db/songs";
 import { procedure, router } from "../trpc";
-import dbAlbums from "../../db/albums";
-import { getValidator } from "../../schemas/queries";
-import { getMusic } from "../getMusic";
+import dbAlbums from "../../../db/albums";
+import { getValidator } from "../../Music/schema";
+import { getMusic } from "../../Music";
 
 export const musicRouter = router({
   get: procedure.input(getValidator).query(({ input }) => {

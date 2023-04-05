@@ -1,6 +1,6 @@
 import prisma from "../../lib/prisma";
-import { MusicData } from "../songs";
-import { AlbumQueryOut } from "./validator";
+import { MusicData } from "../types";
+import { AlbumQueryOut } from "./schema";
 
 interface dbAlbums {
   get: (query: AlbumQueryOut) => Promise<MusicData[]>;

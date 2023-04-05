@@ -17,10 +17,5 @@ export const artistsQueryValidator = z.object({
   order: z.enum(["asc", "desc"]).catch("desc"),
 });
 
-export const DEFAULT_ARTIST_QUERY: ArtistQueryOut = {
-  sortBy: "createdAt",
-  order: "desc",
-};
-
 export type ArtistQueryIn = z.input<typeof artistsQueryValidator>;
 export type ArtistQueryOut = z.infer<typeof artistsQueryValidator>;
