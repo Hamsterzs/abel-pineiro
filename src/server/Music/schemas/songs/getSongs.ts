@@ -1,14 +1,14 @@
 import { z } from "zod";
-import { Album } from "@prisma/client";
+import { ModelSong } from "../../../../db/Models";
 
-type SortByOptions = keyof Pick<Album, "createdAt" | "rating">;
+type SortByOptions = keyof Pick<ModelSong, "createdAt" | "rating">;
 
 const sortByOptions: readonly SortByOptions[] = [
   "createdAt",
   "rating",
 ] as const;
 
-export const albumQueryValidator = z.object({
+export const SongQueryValidator = z.object({
   sortBy: z
     .enum(
       sortByOptions as [(typeof sortByOptions)[number], ...typeof sortByOptions]
@@ -17,5 +17,5 @@ export const albumQueryValidator = z.object({
   order: z.enum(["asc", "desc"]).catch("desc"),
 });
 
-export type AlbumQueryIn = z.input<typeof albumQueryValidator>;
-export type AlbumQueryOut = z.infer<typeof albumQueryValidator>;
+export type SongQueryIn = z.input<typeof SongQueryValidator>;
+export type SongQueryOut = z.infer<typeof SongQueryValidator>;

@@ -1,12 +1,7 @@
 import prisma from "../../lib/prisma";
-import { MusicData } from "../types";
-import { SongQueryOut } from "./schema";
+import { DbSongs } from "../../server/Music/types/DbSongs";
 
-interface dbSongs {
-  get: (query: SongQueryOut) => Promise<MusicData[]>;
-}
-
-const dbSongs: dbSongs = {
+const dbSongs: DbSongs = {
   get: async (query) => {
     const songs = await prisma.song.findMany({
       include: {

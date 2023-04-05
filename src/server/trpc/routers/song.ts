@@ -1,7 +1,7 @@
 import dbSongs from "../../../db/songs";
 import { procedure, router } from "../trpc";
 import dbAlbums from "../../../db/albums";
-import { getValidator } from "../../Music/schema";
+import { getValidator } from "../../Music/schemas/music/getMusic";
 import { getMusic } from "../../Music";
 
 export const musicRouter = router({

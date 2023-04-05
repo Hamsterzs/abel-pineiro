@@ -15,16 +15,16 @@ import {
 } from "next";
 import { fjalla } from "./_app";
 import dbSongs from "../db/songs";
-import { SongQueryIn } from "../db/songs/schema";
+import { SongQueryIn } from "../server/Music/schemas/songs/getSongs";
 import { trpc } from "../utils/trpc";
 import {
   getValidator,
   GetValidator,
   GetValidatorIn,
-} from "../server/Music/schema";
+} from "../server/Music/schemas/music/getMusic";
 import dbAlbums from "../db/albums";
 import { getMusic } from "../server/Music";
-import { MusicData } from "../db/types";
+import { MusicData } from "../server/Music/types/MusicData";
 
 export const getServerSideProps: GetServerSideProps<{
   music: MusicData[];

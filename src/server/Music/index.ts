@@ -1,11 +1,8 @@
 import dbAlbums from "../../db/albums";
-import { AlbumQueryOut } from "../../db/albums/schema";
 import dbArtists from "../../db/artists";
-import { ArtistQueryOut } from "../../db/artists/schema";
 import dbSongs from "../../db/songs";
-import { SongQueryOut } from "../../db/songs/schema";
-import { MusicData } from "../../db/types";
-import { GetValidator, GetValidatorIn, getValidator } from "./schema";
+import { MusicData } from "./types/MusicData";
+import { GetValidatorIn, getValidator } from "./schemas/music/getMusic";
 
 export const getMusic = (musicQuery: GetValidatorIn): Promise<MusicData[]> => {
   const validatedMusicQuery = getValidator.parse(musicQuery);

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { SongQueryValidator } from "../../db/songs/schema";
-import { albumQueryValidator } from "../../db/albums/schema";
-import { artistsQueryValidator } from "../../db/artists/schema";
+import { SongQueryValidator } from "../songs/getSongs";
+import { albumQueryValidator } from "../albums/getAlbums";
+import { artistsQueryValidator } from "../artists/getArtists";
 
 export const getValidator = z
   .union([

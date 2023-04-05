@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { Artist } from "@prisma/client";
+import { ModelArtist } from "../../../../db/Models";
 
-type SortByOptions = keyof Pick<Artist, "createdAt" | "rating">;
+type SortByOptions = keyof Pick<ModelArtist, "createdAt" | "rating">;
 
 const sortByOptions: readonly SortByOptions[] = [
   "createdAt",

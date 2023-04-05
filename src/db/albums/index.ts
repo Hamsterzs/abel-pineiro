@@ -1,12 +1,9 @@
 import prisma from "../../lib/prisma";
-import { MusicData } from "../types";
-import { AlbumQueryOut } from "./schema";
+import { MusicData } from "../../server/Music/types/MusicData";
+import { AlbumQueryOut } from "../../server/Music/schemas/albums/getAlbums";
+import { DbAlbums } from "../../server/Music/types/DbAlbums";
 
-interface dbAlbums {
-  get: (query: AlbumQueryOut) => Promise<MusicData[]>;
-}
-
-const dbAlbums: dbAlbums = {
+const dbAlbums: DbAlbums = {
   get: async (query) => {
     const albums = await prisma.album.findMany({
       select: {
