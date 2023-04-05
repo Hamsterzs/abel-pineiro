@@ -6,8 +6,8 @@ interface dbSongs {
   get: (query: SongQueryOut) => Promise<MusicData[]>;
 }
 
-class Songs implements dbSongs {
-  get = async (query: SongQueryOut) => {
+const dbSongs: dbSongs = {
+  get: async (query) => {
     const songs = await prisma.song.findMany({
       include: {
         artist: {
@@ -37,9 +37,7 @@ class Songs implements dbSongs {
       rating: song.rating,
       image: song.album.image.url,
     }));
-  };
-}
+  },
+};
 
-const dbSongs = new Songs();
-
-export default dbSongs;
+export default Object.freeze(dbSongs);

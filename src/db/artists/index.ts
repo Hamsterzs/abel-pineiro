@@ -6,8 +6,8 @@ interface dbArtists {
   get: (query: ArtistQueryOut) => Promise<MusicData[]>;
 }
 
-class Artists implements dbArtists {
-  get = async (query: ArtistQueryOut) => {
+const dbArtists: dbArtists = {
+  get: async (query) => {
     const artists = await prisma.artist.findMany({
       select: {
         id: true,
@@ -26,9 +26,7 @@ class Artists implements dbArtists {
       rating: artist.rating,
       image: artist.image.url,
     }));
-  };
-}
+  },
+};
 
-const dbArtists = new Artists();
-
-export default dbArtists;
+export default Object.freeze(dbArtists);

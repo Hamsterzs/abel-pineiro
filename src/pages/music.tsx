@@ -85,7 +85,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
           content="Abel Pineiro's favorite Songs, Artists and Albums."
         />
       </Head>
-
+      {/* Latest Song i listened to */}
       <div className="container mx-auto">
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
@@ -109,9 +109,11 @@ const Music = ({ music: initialMusic }: InitialProps) => {
         </div>
       </div>
 
+      {/* Main Body */}
       <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)]">
         <div className="container mx-auto flex h-36 w-11/12 flex-col items-center justify-center gap-2 overflow-visible py-2 md:w-[70%] md:py-4 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="flex w-full justify-between md:mb-2">
+            {/* Entity Selector dropdown */}
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -145,6 +147,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
             </Menu>
 
             <div>
+              {/* Order selector dropdown */}
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -181,6 +184,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
                 </Menu.Items>
               </Menu>
 
+              {/* Sort by selector dropdown */}
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
@@ -218,6 +222,8 @@ const Music = ({ music: initialMusic }: InitialProps) => {
               </Menu>
             </div>
           </div>
+
+          {/* Scroll position indicator */}
           <div className="flex w-full flex-col justify-center">
             <div className="h-3 overflow-hidden rounded-full bg-gray-500/30">
               <motion.div
@@ -239,6 +245,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
           </div>
         </div>
 
+        {/* Vinyls Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div
             key={JSON.stringify(musicQuery)}
@@ -269,6 +276,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
         </AnimatePresence>
       </div>
 
+      {/* Modal with selected data */}
       <AnimatePresence>
         {!!id && !!dispayedSong && (
           <Dialog

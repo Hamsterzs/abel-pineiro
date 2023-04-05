@@ -6,8 +6,8 @@ interface dbAlbums {
   get: (query: AlbumQueryOut) => Promise<MusicData[]>;
 }
 
-class Albums implements dbAlbums {
-  get = async (query: AlbumQueryOut) => {
+const dbAlbums: dbAlbums = {
+  get: async (query) => {
     const albums = await prisma.album.findMany({
       select: {
         id: true,
@@ -28,9 +28,7 @@ class Albums implements dbAlbums {
       rating: album.rating,
       image: album.image.url,
     }));
-  };
-}
+  },
+};
 
-const dbAlbums = new Albums();
-
-export default dbAlbums;
+export default Object.freeze(dbAlbums);
