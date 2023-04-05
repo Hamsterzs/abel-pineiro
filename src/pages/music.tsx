@@ -64,7 +64,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
     return validatedQuery.data;
   })();
 
-  const { data: music } = trpc.music.get.useQuery(musicQuery, {
+  const { data: music, isFetching } = trpc.music.get.useQuery(musicQuery, {
     initialData: initialMusic,
     staleTime: 1000 * 60 * 60 * 24,
     initialDataUpdatedAt: 1000 * 60 * 60 * 25,
@@ -117,7 +117,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
                 </Menu.Button>
               </div>
               <Menu.Items className="absolute left-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {["songs", "albums"].map((order) => (
+                {["songs", "albums", "artists"].map((order) => (
                   <div className="px-1 py-1" key={order}>
                     <Menu.Item>
                       {({ active }) => (
@@ -485,17 +485,7 @@ const StarRating = ({
   );
 };
 
-const Vinyl = ({
-  song,
-}: {
-  song: {
-    id: string;
-    image: string;
-    title: string;
-    subTitle: string;
-    rating: number;
-  };
-}) => {
+const Vinyl = ({ song }: { song: MusicData }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const { query: activeQuery } = useRouter();
 

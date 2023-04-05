@@ -4,7 +4,7 @@ import { SongQueryOut } from "./validator";
 export type MusicData = {
   id: string;
   title: string;
-  subTitle: string;
+  subTitle?: string;
   rating: number;
   image: string;
 };
