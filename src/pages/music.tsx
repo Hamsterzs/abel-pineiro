@@ -15,50 +15,34 @@ import {
 } from "next";
 import { fjalla } from "./_app";
 import dbSongs, { MusicData } from "../db/songs";
-import {
-  DEFAULT_SONG_QUERY,
-  SongQueryIn,
-  SongQueryValidator,
-} from "../db/songs/validator";
+import { DEFAULT_SONG_QUERY, SongQueryIn } from "../db/songs/validator";
 import { trpc } from "../utils/trpc";
-import { getValidator, GetValidator } from "../schemas/queries";
+import { getValidator, GetValidator, GetValidatorIn } from "../schemas/queries";
 import dbAlbums from "../db/albums";
+import { getMusic } from "../server/getMusic";
 
-export const getServerSideProps: GetServerSideProps = async ({
-  query: urlQuery,
-}: GetServerSidePropsContext) => {
-  const query: SongQueryIn = {
-    sortBy: urlQuery.sortBy,
-    order: urlQuery.order,
+export const getServerSideProps: GetServerSideProps<{
+  music: MusicData[];
+}> = async ({ query: urlQuery }: GetServerSidePropsContext) => {
+  const query: GetValidatorIn = {
+    type: urlQuery.type,
+    query: {
+      sortBy: urlQuery.sortBy,
+      order: urlQuery.order,
+    },
   };
 
-  const validatedQuery = getValidator.safeParse({ type: urlQuery.type, query });
-
-  if (!validatedQuery.success)
-    return {
-      props: {
-        songs: await dbSongs.get(DEFAULT_SONG_QUERY),
-      },
-    };
-
-  if (validatedQuery.data.type === "albums") {
-    return {
-      props: {
-        songs: await dbAlbums.get(validatedQuery.data.query),
-      },
-    };
-  }
+  const music = await getMusic({ type: urlQuery.type, query });
 
   return {
     props: {
-      songs: await dbSongs.get(validatedQuery.data.query),
+      music,
     },
   };
 };
 
-const Music = ({
-  songs: initialSongs,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+type InitialProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+const Music = ({ music: initialMusic }: InitialProps) => {
   const router = useRouter();
 
   const { id } = router.query;
@@ -80,15 +64,15 @@ const Music = ({
     return validatedQuery.data;
   })();
 
-  const { data: songs } = trpc.music.get.useQuery(musicQuery, {
-    initialData: initialSongs,
+  const { data: music } = trpc.music.get.useQuery(musicQuery, {
+    initialData: initialMusic,
     staleTime: 1000 * 60 * 60 * 24,
     initialDataUpdatedAt: 1000 * 60 * 60 * 25,
   });
 
-  const dispayedSong = id && songs?.find((song) => song.id === id);
+  const dispayedSong = id && music?.find((song) => song.id === id);
 
-  if (!songs) return null;
+  if (!music) return null;
 
   return (
     <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
@@ -99,14 +83,15 @@ const Music = ({
           content="Abel Pineiro's favorite Songs, Artists and Albums."
         />
       </Head>
+
       <div className="container mx-auto">
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
             <div className="w-full truncate font-fjalla text-sm font-bold md:text-lg lg:text-2xl">
-              {songs[0].title}
+              {music[0].title}
             </div>
             <div className="w-full truncate text-xs md:text-base lg:text-xl">
-              {songs[0].subTitle}
+              {music[0].subTitle}
             </div>
           </div>
 
@@ -175,7 +160,7 @@ const Music = ({
                               query: {
                                 ...musicQuery.query,
                                 order,
-                                type: router.query.type,
+                                type: musicQuery.type,
                               },
                             }}
                             className={`${
@@ -211,7 +196,7 @@ const Music = ({
                               query: {
                                 ...musicQuery.query,
                                 sortBy: dataKey,
-                                type: router.query.type,
+                                type: musicQuery.type,
                               },
                             }}
                             className={`${
@@ -247,8 +232,8 @@ const Music = ({
                 className="h-full w-32 overflow-hidden rounded-full bg-blue-500"
               ></motion.div>
             </div>
-            {Math.ceil((scrollPercentage * songs.length) / 100)}:00/
-            {songs.length}:00
+            {Math.ceil((scrollPercentage * music.length) / 100)}:00/
+            {music.length}:00
           </div>
         </div>
 
@@ -265,7 +250,7 @@ const Music = ({
             className="h-[calc(100%-3rem)]"
           >
             <VinylsContainer setScrollPercentage={setScrollPercentage}>
-              {songs.map((song) => (
+              {music.map((song) => (
                 <Vinyl
                   song={{
                     id: song.id,

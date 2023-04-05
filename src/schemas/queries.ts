@@ -10,3 +10,4 @@ export const getValidator = z
   .catch({ type: "songs", query: DEFAULT_SONG_QUERY });
 
 export type GetValidator = z.infer<typeof getValidator>;
+export type GetValidatorIn = z.input<typeof getValidator>;
