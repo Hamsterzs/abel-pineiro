@@ -1,7 +1,9 @@
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
-import { FaPlayCircle } from "react-icons/fa";
+import { FaCompactDisc, FaPlayCircle, FaSortUp, FaUser } from "react-icons/fa";
 import { BiSkipNext } from "react-icons/bi";
+import { SiApplemusic } from "react-icons/si";
+import { BsCalendar3 } from "react-icons/bs";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
@@ -46,6 +48,39 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
+const iconStyle = (active: boolean) =>
+  `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
+    active ? "text-blue-500" : "text-slate-500"
+  } `;
+
+const Types = [
+  {
+    value: "songs",
+    icon: (active: boolean) => <SiApplemusic className={iconStyle(active)} />,
+  },
+  {
+    value: "albums",
+    icon: (active: boolean) => <FaCompactDisc className={iconStyle(active)} />,
+  },
+  {
+    value: "artists",
+    icon: (active: boolean) => <FaUser className={iconStyle(active)} />,
+  },
+];
+
+const SortBy = [
+  {
+    value: "createdAt",
+    icon: (active: boolean) => <BsCalendar3 className={iconStyle(active)} />,
+    label: "Date",
+  },
+  {
+    value: "rating",
+    icon: (active: boolean) => <AiFillStar className={iconStyle(active)} />,
+    label: "Rating",
+  },
+];
+
 type InitialProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 const Music = ({ music: initialMusic }: InitialProps) => {
   const router = useRouter();
@@ -86,7 +121,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
         />
       </Head>
       {/* Latest Song i listened to */}
-      <div className="container mx-auto">
+      <div className="container mx-auto 3xl:max-w-[1750px] 4xl:max-w-[2100px]">
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
             <div className="w-full truncate font-fjalla text-sm font-bold md:text-lg lg:text-2xl">
@@ -110,122 +145,83 @@ const Music = ({ music: initialMusic }: InitialProps) => {
       </div>
 
       {/* Main Body */}
-      <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)]">
-        <div className="container mx-auto flex h-36 w-11/12 flex-col items-center justify-center gap-2 overflow-visible py-2 md:w-[70%] md:py-4 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
-          <div className="flex w-full justify-between md:mb-2">
-            {/* Entity Selector dropdown */}
-            <Menu as="div" className="relative inline-block text-left">
-              <div>
-                <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                  Options
-                </Menu.Button>
-              </div>
-              <Menu.Items className="absolute left-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {["songs", "albums", "artists"].map((order) => (
-                  <div className="px-1 py-1" key={order}>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link
-                          href={{
-                            pathname: "/music",
-                            query: { ...musicQuery.query, type: order },
-                          }}
-                          className={`${
-                            active
-                              ? "bg-violet-500 text-white"
-                              : "text-gray-900"
-                          } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                          shallow={true}
-                        >
-                          {order}
-                        </Link>
-                      )}
-                    </Menu.Item>
+      <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)] 3xl:max-w-[1750px] 4xl:max-w-[2100px] ">
+        <div className="container mx-auto flex h-28 w-11/12 flex-col items-center justify-center gap-2 overflow-visible py-1 md:w-[70%] md:py-4 lg:h-36 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
+          <div className="flex w-full items-center justify-between overflow-auto md:mb-2 md:overflow-hidden">
+            <div className="mr-10 flex gap-2">
+              {/* Entity Selector dropdown */}
+              {Types.map((type) => (
+                <Link
+                  href={{
+                    pathname: "/music",
+                    query: { ...musicQuery.query, type: type.value },
+                  }}
+                  key={type.value}
+                  shallow
+                >
+                  <div className="flex h-14 w-14 flex-col items-center justify-center">
+                    {type.icon(musicQuery.type === type.value)}
+                    {type.value}
                   </div>
-                ))}
-              </Menu.Items>
-            </Menu>
+                </Link>
+              ))}
+            </div>
 
-            <div>
-              {/* Order selector dropdown */}
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Options
-                  </Menu.Button>
-                </div>
-                <Menu.Items className="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {["asc", "desc"].map((order) => (
-                    <div className="px-1 py-1" key={order}>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            href={{
-                              pathname: "/music",
-                              query: {
-                                ...musicQuery.query,
-                                order,
-                                type: musicQuery.type,
-                              },
-                            }}
-                            className={`${
-                              active
-                                ? "bg-violet-500 text-white"
-                                : "text-gray-900"
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            shallow
-                          >
-                            {order}
-                          </Link>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  ))}
-                </Menu.Items>
-              </Menu>
+            <div className="flex gap-2">
+              {/* Sort by selector */}
+              {SortBy.map((sortBy) => (
+                <Link
+                  href={{
+                    pathname: "/music",
+                    query: {
+                      ...musicQuery.query,
+                      sortBy: sortBy.value,
+                      type: musicQuery.type,
+                    },
+                  }}
+                  key={sortBy.value}
+                  shallow
+                >
+                  <div className="flex h-14 w-14 flex-col items-center justify-center">
+                    {sortBy.icon(musicQuery.query.sortBy === sortBy.value)}
+                    {sortBy.label}
+                  </div>
+                </Link>
+              ))}
 
-              {/* Sort by selector dropdown */}
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                    Options
-                  </Menu.Button>
-                </div>
-                <Menu.Items className="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {["createdAt", "rating"].map((dataKey) => (
-                    <div className="px-1 py-1" key={dataKey}>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            href={{
-                              pathname: "/music",
-                              query: {
-                                ...musicQuery.query,
-                                sortBy: dataKey,
-                                type: musicQuery.type,
-                              },
-                            }}
-                            className={`${
-                              active
-                                ? "bg-violet-500 text-white"
-                                : "text-gray-900"
-                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                            shallow
-                          >
-                            {dataKey}
-                          </Link>
-                        )}
-                      </Menu.Item>
+              {/* Order selector */}
+              <div className="flex items-center justify-center">
+                <Link
+                  href={{
+                    pathname: "/music",
+                    query: {
+                      ...musicQuery.query,
+                      order: musicQuery.query.order === "asc" ? "desc" : "asc",
+                      type: musicQuery.type,
+                    },
+                  }}
+                  shallow
+                >
+                  <div className="flex justify-center rounded-full">
+                    <div className="h-5 w-5 rounded-full bg-slate-300 lg:h-8 lg:w-8 ">
+                      <FaSortUp
+                        className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${
+                          musicQuery.query.order === "asc"
+                            ? "rotate-0 lg:translate-y-[6px]"
+                            : "rotate-180 lg:-translate-y-[6px]"
+                        } `}
+                      />
                     </div>
-                  ))}
-                </Menu.Items>
-              </Menu>
+                  </div>
+                  Order
+                </Link>
+              </div>
             </div>
           </div>
 
           {/* Scroll position indicator */}
-          <div className="flex w-full flex-col justify-center">
-            <div className="h-3 overflow-hidden rounded-full bg-gray-500/30">
+          <div className="flex w-full flex-col justify-center px-1">
+            <div className="h-1 overflow-hidden rounded-full bg-gray-500/30 lg:h-2">
               <motion.div
                 animate={{
                   width: `${scrollPercentage}%`,
@@ -240,8 +236,10 @@ const Music = ({ music: initialMusic }: InitialProps) => {
                 className="h-full w-32 overflow-hidden rounded-full bg-blue-500"
               ></motion.div>
             </div>
-            {Math.ceil((scrollPercentage * music.length) / 100)}:00/
-            {music.length}:00
+            <div className="lg: text-xs lg:text-base">
+              {Math.ceil((scrollPercentage * music.length) / 100)}:00/
+              {music.length}:00
+            </div>
           </div>
         </div>
 
@@ -256,7 +254,7 @@ const Music = ({ music: initialMusic }: InitialProps) => {
               x: { type: "spring", stiffness: 300, damping: 30 },
               opacity: { duration: 0.2 },
             }}
-            className="h-[calc(100%-3rem)]"
+            className="h-[calc(100%-1rem)]"
           >
             <VinylsContainer setScrollPercentage={setScrollPercentage}>
               {music.map((song) => (
@@ -544,7 +542,11 @@ const Vinyl = ({ song }: { song: MusicData }) => {
         </div>
         <div className="text-sm md:text-base lg:text-xl">{song.subTitle}</div>
         <div className="my-2">
-          <StarRating rating={song.rating} size={25} color="black" />
+          <StarRating
+            rating={song.rating}
+            size={window.innerWidth > 500 ? 30 : 20}
+            color="black"
+          />
         </div>
       </div>
     </Link>
