@@ -26,6 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const dataKeys = Object.keys(data);
 
     Object.keys(data).forEach((prop) => {
+      // @ts-expect-error
       searchParams.set(prop, data[prop]);
     });
 
