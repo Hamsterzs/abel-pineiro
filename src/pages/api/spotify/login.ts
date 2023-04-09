@@ -4,8 +4,6 @@ import spotifyCredentails from "../../../utils/spotifyCredentials";
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "GET") return res.status(404);
 
-  //   return res.status(200).json(spotifyCredentails);
-
   const scopes = "user-read-recently-played";
 
   const url = `https://accounts.spotify.com/authorize?&client_id=${

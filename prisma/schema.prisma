@@ -10,7 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
   relationMode = "prisma"
 }
-
 model Artist {
   id        String      @id @default(cuid())
   name      String
@@ -62,4 +61,10 @@ model Image {
   url       String
   Albums    Album[]
   Artists   Artist[]
+}
+
+model Spotify {
+  id        String      @id @default(cuid())
+  accessToken String
+  refreshToken String
 }

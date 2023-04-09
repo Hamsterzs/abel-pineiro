@@ -4,12 +4,19 @@ import dbAlbums from "../../../db/albums";
 import { getValidator } from "../../Music/schemas/music/getMusic";
 import { getMusic } from "../../Music";
 import { z } from "zod";
+import prisma from "../../../lib/prisma";
 
 export const musicRouter = router({
   get: procedure.input(getValidator).query(({ input }) => {
     return getMusic(input);
   }),
   myLastSongs: procedure.query(async () => {
+    const tokens = await prisma.spotify.findFirst();
+
+    if (!tokens) throw "Error with spotify tokens";
+
+    const { accessToken } = tokens;
+
     const url =
       "https://api.spotify.com/v1/me/player/recently-played?limit=10&before=" +
       Date.now();
@@ -19,11 +26,12 @@ export const musicRouter = router({
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     const data = await response.json();
+
     const { items } = data;
 
     const dataParser = z.array(
