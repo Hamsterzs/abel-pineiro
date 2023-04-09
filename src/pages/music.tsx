@@ -107,6 +107,16 @@ const Music = ({ music: initialMusic }: InitialProps) => {
     initialDataUpdatedAt: 1000 * 60 * 60 * 25,
   });
 
+  const myLastSongs = trpc.music.myLastSongs.useQuery();
+
+  const [lastSongIndex, setLastSongIndex] = React.useState(0);
+
+  const handleLastSongIndexChange = (index: number) => {
+    if (index < 0 || index >= (myLastSongs.data?.length || 0)) return;
+
+    setLastSongIndex(index);
+  };
+
   const dispayedSong = id && music?.find((song) => song.id === id);
 
   if (!music) return null;
@@ -125,17 +135,27 @@ const Music = ({ music: initialMusic }: InitialProps) => {
         <div className="mx-auto flex h-16 w-11/12 items-center rounded-xl bg-white/70 shadow-lg backdrop-blur-lg md:h-20 md:w-[70%] lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
           <div className="ml-4 mr-auto w-3/5 text-2xl sm:ml-6 sm:w-1/2 lg:w-auto">
             <div className="w-full truncate font-fjalla text-sm font-bold md:text-lg lg:text-2xl">
-              {music[0].title}
+              {myLastSongs.data
+                ? myLastSongs.data[lastSongIndex].song
+                : "Loading..."}
             </div>
             <div className="w-full truncate text-xs md:text-base lg:text-xl">
-              {music[0].subTitle}
+              {myLastSongs.data
+                ? myLastSongs.data[lastSongIndex].artist
+                : "Loading..."}
             </div>
           </div>
 
           <div className="flex items-center">
-            <BiSkipNext className="h-8 w-8 rotate-180 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
+            <BiSkipNext
+              className="h-8 w-8 rotate-180 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]"
+              onClick={() => handleLastSongIndexChange(lastSongIndex + 1)}
+            />
             <FaPlayCircle className="h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
-            <BiSkipNext className="mr-auto h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]" />
+            <BiSkipNext
+              className="mr-auto h-8 w-8 text-slate-500 sm:h-10 sm:w-10 lg:h-[50px] lg:w-[50px] xl:h-[60px] xl:w-[60px]"
+              onClick={() => handleLastSongIndexChange(lastSongIndex - 1)}
+            />
           </div>
 
           <button className="absolute top-0 left-0 mr-4 ml-auto -translate-y-1/2 rounded-full bg-blue-500 px-6 py-1 text-xs font-bold text-white shadow-md lg:relative lg:translate-y-0 lg:py-2 lg:text-lg">
@@ -544,7 +564,9 @@ const Vinyl = ({ song }: { song: MusicData }) => {
         <div className="my-2">
           <StarRating
             rating={song.rating}
-            size={window.innerWidth > 500 ? 30 : 20}
+            size={
+              typeof window !== "undefined" && window.innerWidth > 500 ? 30 : 20
+            }
             color="black"
           />
         </div>
