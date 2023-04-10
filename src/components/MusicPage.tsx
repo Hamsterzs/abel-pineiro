@@ -28,7 +28,6 @@ import {
 } from "../server/Music/schemas/music/getMusic";
 import dbAlbums from "../db/albums";
 import { MusicData } from "../server/Music/types/MusicData";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const iconStyle = (active: boolean) =>
   `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
@@ -68,7 +67,7 @@ const MusicPage = ({
   myLastSongs,
 }: {
   music: MusicData[];
-  myLastSongs: any[];
+  myLastSongs: { song: string; artist: string }[] | undefined;
 }) => {
   const router = useRouter();
 
@@ -92,8 +91,6 @@ const MusicPage = ({
     return validatedQuery;
   })();
 
-  //   const myLastSongs = trpc.music.myLastSongs.useQuery();
-
   const [lastSongIndex, setLastSongIndex] = React.useState(0);
 
   const handleLastSongIndexChange = (index: number) => {
@@ -108,7 +105,6 @@ const MusicPage = ({
 
   return (
     <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
-      <ReactQueryDevtools />
       <Head>
         <title>Music</title>
         <meta
@@ -575,4 +571,4 @@ const Vinyl = ({ song }: { song: MusicData }) => {
   );
 };
 
-export default trpc.withTRPC(MusicPage);
+export default MusicPage;

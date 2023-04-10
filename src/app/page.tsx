@@ -1,9 +1,8 @@
-import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 
-const Home: NextPage = () => {
+const Home = () => {
   const TITLE = "Abel Pineiro";
   const DESCRIPTION =
     "Welcome to my personal website, Navigate to some of my interests by selecting a planet.";
