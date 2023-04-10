@@ -20,10 +20,8 @@ const getMusicProps = async (urlQuery: {
   return await getMusic({ type: urlQuery.type, query });
 };
 
-const Page = async ({ params }: { params: any }) => {
-  console.log(params);
-
-  const { type, sortBy, order } = params;
+const Page = async ({ searchParams }: { searchParams: any }) => {
+  const { type, sortBy, order } = searchParams;
 
   const music = await getMusicProps({
     order: order,
