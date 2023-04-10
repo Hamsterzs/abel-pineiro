@@ -1,6 +1,5 @@
 import { z } from "zod";
 import prisma from "../../lib/prisma";
-import type { Spotify } from "@prisma/client";
 
 const newTokensValidator = z.object({
   accessToken: z.string().min(1),
