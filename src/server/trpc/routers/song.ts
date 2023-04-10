@@ -5,6 +5,7 @@ import { getValidator } from "../../Music/schemas/music/getMusic";
 import { getMusic } from "../../Music";
 import { z } from "zod";
 import prisma from "../../../lib/prisma";
+import getRefreshToken from "../../Spotify/getRefreshToken";
 
 export const musicRouter = router({
   get: procedure.input(getValidator).query(({ input }) => {
@@ -21,7 +22,7 @@ export const musicRouter = router({
       "https://api.spotify.com/v1/me/player/recently-played?limit=10&before=" +
       Date.now();
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -29,6 +30,19 @@ export const musicRouter = router({
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.status === 401) {
+      const tokens = await getRefreshToken();
+
+      response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokens.accessToken}`,
+        },
+      });
+    }
 
     const data = await response.json();
 
