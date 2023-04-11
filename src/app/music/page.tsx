@@ -11,7 +11,7 @@ const getMusicProps = async (urlQuery: {
   sortBy: string;
   order: string;
 }) => {
-  const query: GetValidatorIn = {
+  const query = {
     type: urlQuery.type,
     query: {
       sortBy: urlQuery.sortBy,
@@ -19,16 +19,16 @@ const getMusicProps = async (urlQuery: {
     },
   };
 
-  return await getMusic({ type: urlQuery.type, query });
+  return await getMusic({ type: urlQuery.type, query: query.query });
 };
 
 const Page = async ({ searchParams }: any) => {
   const { type, sortBy, order } = searchParams;
 
   const music = await getMusicProps({
-    order: order,
-    sortBy: sortBy,
-    type: type,
+    type,
+    order,
+    sortBy,
   });
 
   const myLastSongs = await getLastSongs();
