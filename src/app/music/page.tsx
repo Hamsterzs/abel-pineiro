@@ -4,6 +4,8 @@ import { GetValidatorIn } from "../../server/Music/schemas/music/getMusic";
 import { getMusic } from "../../server/Music";
 import getLastSongs from "../../server/Spotify/getLastSongs";
 
+export const revalidate = 0;
+
 const getMusicProps = async (urlQuery: {
   type: string;
   sortBy: string;
