@@ -1,5 +1,7 @@
 import prisma from "../../lib/prisma";
 
+export const revalidate = 0;
+
 const Page = async () => {
   const transactions = await prisma.transactions.findMany();
 

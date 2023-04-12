@@ -1,6 +1,7 @@
 import { allTransactions } from "../../../drizzle/db";
 
 export const runtime = "experimental-edge";
+export const revalidate = 0;
 
 const Page = async () => {
   const transactions = await allTransactions();

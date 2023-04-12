@@ -73,15 +73,15 @@ const MusicPage = ({
 
   const searchParams = useSearchParams();
 
-  const id = searchParams.get("id");
+  const id = searchParams?.get("id");
 
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
   const [showComments, setShowComments] = React.useState(false);
 
   const musicQuery: GetValidator = (() => {
-    const order = searchParams.get("order");
-    const sortBy = searchParams.get("sortBy");
-    const type = searchParams.get("type");
+    const order = searchParams?.get("order");
+    const sortBy = searchParams?.get("sortBy");
+    const type = searchParams?.get("type");
 
     const validatedQuery = getValidator.parse({
       type,
@@ -285,7 +285,9 @@ const MusicPage = ({
                 "/music" +
                   "?" +
                   (() => {
-                    const newParams = new URLSearchParams(searchParams);
+                    const newParams = new URLSearchParams(
+                      searchParams?.toString()
+                    );
                     newParams.delete("id");
                     return newParams.toString();
                   })()
@@ -315,7 +317,9 @@ const MusicPage = ({
                       "/music" +
                       "?" +
                       (() => {
-                        const newParams = new URLSearchParams(searchParams);
+                        const newParams = new URLSearchParams(
+                          searchParams?.toString()
+                        );
                         newParams.delete("id");
                         return newParams.toString();
                       })(),
@@ -506,9 +510,9 @@ const StarRating = ({
 const Vinyl = ({ song }: { song: MusicData }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const searchParams = useSearchParams();
-  const order = searchParams.get("order");
-  const sortBy = searchParams.get("sortBy");
-  const type = searchParams.get("type");
+  const order = searchParams?.get("order");
+  const sortBy = searchParams?.get("sortBy");
+  const type = searchParams?.get("type");
 
   return (
     <Link
