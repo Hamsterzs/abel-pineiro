@@ -1,3 +1,5 @@
+import { drizzRouter } from "./routers/drizz";
+import { primaRouter } from "./routers/prima";
 import { musicRouter } from "./routers/song";
 import { router } from "./trpc";
 
@@ -8,6 +10,8 @@ import { router } from "./trpc";
  */
 export const appRouter = router({
   music: musicRouter,
+  prima: primaRouter,
+  drizz: drizzRouter,
 });
 
 // export type definition of API

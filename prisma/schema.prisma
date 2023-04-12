@@ -68,3 +68,10 @@ model Spotify {
   accessToken String
   refreshToken String
 }
+
+model Transactions {
+  id        String      @id @default(cuid())
+  createdAt DateTime @default(now())
+  amount    Int
+  name      String
+}

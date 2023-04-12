@@ -8,7 +8,7 @@ const nextConfig = {
     locales: ["en"],
     defaultLocale: "en",
   },
-  experimental: { appDir: true },
+  experimental: { appDir: true, serverComponentsExternalPackages: ["mysql2"] },
 };
 
 module.exports = nextConfig;
