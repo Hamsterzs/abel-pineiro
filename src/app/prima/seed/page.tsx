@@ -35,4 +35,4 @@ const Page = () => {
   );
 };
 
-export default trpc.withTRPC(Page);
+export default trpc.withTRPC(Page) as () => JSX.Element;
