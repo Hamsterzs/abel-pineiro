@@ -1,6 +1,6 @@
 import { allTransactions } from "../../drizzle/db";
 
-export const revalidate = 0;
+// export const revalidate = 0;
 
 const Page = async () => {
   const transactions = await allTransactions();
