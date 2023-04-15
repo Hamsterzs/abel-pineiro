@@ -5,7 +5,11 @@ export const runtime = "experimental-edge";
 export const revalidate = 0;
 
 const Page = async () => {
-  const transactions = await allTransactions();
+  const transactions1 = await allTransactions();
+  const transactions2 = await allTransactions();
+  const transactions3 = await allTransactions();
+
+  const transactions = [...transactions1, ...transactions2, ...transactions3];
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-3 text-lg">
@@ -13,8 +17,6 @@ const Page = async () => {
       {transactions.map((transaction) => (
         <div key={transaction.id}>
           <p>{transaction.name}</p>
-          <p>{transaction.amount}</p>
-          <p>{transaction.createdAt?.toLocaleString()}</p>
         </div>
       ))}
     </div>
