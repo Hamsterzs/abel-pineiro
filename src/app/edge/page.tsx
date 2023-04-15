@@ -1,7 +1,7 @@
+import randomNum from "../../utils/randomNum";
+
 export const runtime = "experimental-edge";
 export const revalidate = 0;
-
-const randomNum = () => Math.floor(Math.random() * 1000);
 
 const Page = () => {
   return (
