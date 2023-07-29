@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { Abel, Fjalla_One, Prompt } from "@next/font/google";
+import { Abel, Fjalla_One, Prompt } from "next/font/google";
 import { trpc } from "../utils/trpc";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
