@@ -36,7 +36,7 @@ const Home = () => {
               title="Work"
               planetImage="/jupiter.png"
               animation="animate-back-and-forth-1"
-              links="/music"
+              links="/drizz-music"
             />
 
             <PlanetSlider
