@@ -55,12 +55,14 @@ const getLastSongs = async () => {
 
   const newData = dataParser.safeParse(items);
 
-  if (!newData.success) return;
+  if (!newData.success) return [];
 
   const betterData = newData.data.map((song) => ({
     song: song.track.name,
     artist: song.track.artists[0].name,
   }));
+
+  await new Promise((res) => setTimeout(res, 5000));
 
   return betterData;
 };

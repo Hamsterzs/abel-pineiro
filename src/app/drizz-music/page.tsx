@@ -1,10 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
-import getLastSongs from "../../server/Spotify/getLastSongs";
 import { db } from "../../drizzle/db";
 import { album, artist, image, song } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../server/Music/types/MusicData";
+import LastSongs from "../../components/LastSongs";
+import LastSongsClient, {
+  LastSongsLoader,
+} from "../../components/LastSongsClient";
 
 export const revalidate = 0;
 
@@ -57,9 +60,13 @@ const Page = async ({ searchParams }: any) => {
     sortBy,
   });
 
-  const myLastSongs = await getLastSongs();
-
-  return <MusicPage music={music} myLastSongs={myLastSongs} />;
+  return (
+    <MusicPage music={music}>
+      <Suspense fallback={<LastSongsLoader />}>
+        <LastSongs />
+      </Suspense>
+    </MusicPage>
+  );
 };
 
 export default Page;

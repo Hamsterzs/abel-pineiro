@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
 import { getMusic } from "../../server/Music";
-import getLastSongs from "../../server/Spotify/getLastSongs";
+import { LastSongsLoader } from "../../components/LastSongsClient";
+import LastSongs from "../../components/LastSongs";
 
 export const revalidate = 0;
 
@@ -30,9 +31,14 @@ const Page = async ({ searchParams }: any) => {
     sortBy,
   });
 
-  const myLastSongs = await getLastSongs();
-
-  return <MusicPage music={music} myLastSongs={myLastSongs} />;
+  return (
+    <MusicPage music={music}>
+      <Suspense fallback={<LastSongsLoader />}>
+        <LastSongs />
+      </Suspense>
+      ;
+    </MusicPage>
+  );
 };
 
 export default Page;
