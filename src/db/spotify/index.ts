@@ -1,5 +1,7 @@
 import { z } from "zod";
-import prisma from "../../lib/prisma";
+import { db } from "../../drizzle/db";
+import { spotify } from "../../drizzle/schema";
+import { createId } from "@paralleldrive/cuid2";
 
 const newTokensValidator = z.object({
   accessToken: z.string().min(1),
@@ -9,23 +11,27 @@ const newTokensValidator = z.object({
 type NewTokens = z.infer<typeof newTokensValidator>;
 
 const dbActions = {
-  getTokens: () => prisma.spotify.findFirst(),
+  getTokens: async () => (await db.select().from(spotify).limit(1))[0],
   setNewTokens: async (input: NewTokens) => {
     const validTokens = newTokensValidator.parse(input);
 
     if (validTokens.refreshToken) {
-      await prisma.spotify.deleteMany();
-      return await prisma.spotify.create({
-        data: {
-          accessToken: validTokens.accessToken,
-          refreshToken: validTokens.refreshToken,
-        },
-      });
+      await db.delete(spotify);
+
+      const newToken = {
+        accessToken: validTokens.accessToken,
+        refreshToken: validTokens.refreshToken,
+        id: createId(),
+      };
+
+      await db.insert(spotify).values(newToken);
+
+      return newToken;
     }
 
-    return prisma.spotify.updateMany({
-      data: { accessToken: validTokens.accessToken },
-    });
+    await db.update(spotify).set({ accessToken: validTokens.accessToken });
+
+    return validTokens;
   },
 };
 

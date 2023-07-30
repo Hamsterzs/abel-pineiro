@@ -1,12 +1,10 @@
 import React from "react";
-import MusicPage from "../../components/MusicPage";
-import { GetValidatorIn } from "../../server/Music/schemas/music/getMusic";
-import { getMusic } from "../../server/Music";
-import getLastSongs from "../../server/Spotify/getLastSongs";
-import { db } from "../../drizzle/db";
-import { album, artist, image, song } from "../../drizzle/schema";
+import MusicPage from "../../../components/MusicPage";
+import getLastSongs from "../../../server/Spotify/getLastSongs";
+import { db } from "../../../drizzle/db";
+import { album, artist, image, song } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { MusicData } from "../../server/Music/types/MusicData";
+import { MusicData } from "../../../server/Music/types/MusicData";
 
 export const revalidate = 0;
 export const runtime = "edge";
@@ -24,7 +22,6 @@ const getMusicProps = async (urlQuery: {
     },
   };
 
-  // return await getMusic({ type: urlQuery.type, query: query.query });
   const songs = await db
     .select({
       id: song.id,

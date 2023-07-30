@@ -2,7 +2,6 @@
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
 import { connect } from "@planetscale/database";
-import { transactionsDrizzle } from "./schema";
 import TRANSACTIONS from "../db/transactions/seed";
 
 // create the connection

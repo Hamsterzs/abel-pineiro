@@ -1,13 +1,15 @@
 import { z } from "zod";
-import prisma from "../../lib/prisma";
+import { db } from "../../drizzle/db";
+import { spotify } from "../../drizzle/schema";
 import getRefreshToken from "./getRefreshToken";
 
 const getLastSongs = async () => {
-  const tokens = await prisma.spotify.findFirst();
+  const tokens = await db.select().from(spotify).limit(1);
+  const token = tokens[0];
 
-  if (!tokens) throw "Error with spotify tokens";
+  if (!token) throw "Error with spotify tokens";
 
-  const { accessToken } = tokens;
+  const { accessToken } = token;
 
   const url =
     "https://api.spotify.com/v1/me/player/recently-played?limit=10&before=" +

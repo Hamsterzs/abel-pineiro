@@ -1,9 +1,8 @@
-import { request } from "http";
 import spotifyCredentails from "../../utils/spotifyCredentials";
-import FormData from "form-data";
 import SpotifyWebApi from "spotify-web-api-node";
 import dbSpotify from "../../db/spotify";
-import prisma from "../../lib/prisma";
+import { db } from "../../drizzle/db";
+import { spotify } from "../../drizzle/schema";
 
 const getRefreshToken = async () => {
   const spotifyApi = new SpotifyWebApi({
@@ -12,11 +11,12 @@ const getRefreshToken = async () => {
     redirectUri: spotifyCredentails.redirect_uri,
   });
 
-  const tokens = await prisma.spotify.findFirst();
+  const tokens = await db.select().from(spotify).limit(1);
+  const token = tokens[0];
 
-  if (!tokens) throw new Error("Spotify tokens don't exist");
+  if (!token) throw new Error("Spotify tokens don't exist");
 
-  spotifyApi.setRefreshToken(tokens.refreshToken);
+  spotifyApi.setRefreshToken(token.refreshToken);
 
   const response = await spotifyApi.refreshAccessToken();
 

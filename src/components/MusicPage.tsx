@@ -10,23 +10,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dialog, Menu } from "@headlessui/react";
+import { Dialog } from "@headlessui/react";
 import Head from "next/head";
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
 import { fjalla } from "../fonts";
-import dbSongs from "../db/songs";
-import { SongQueryIn } from "../server/Music/schemas/songs/getSongs";
-import { trpc } from "../utils/trpc";
 import {
   getValidator,
   GetValidator,
-  GetValidatorIn,
 } from "../server/Music/schemas/music/getMusic";
-import dbAlbums from "../db/albums";
 import { MusicData } from "../server/Music/types/MusicData";
 
 const iconStyle = (active: boolean) =>
