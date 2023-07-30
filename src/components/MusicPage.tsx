@@ -18,6 +18,7 @@ import {
   GetValidator,
 } from "../server/Music/schemas/music/getMusic";
 import { MusicData } from "../server/Music/types/MusicData";
+import useIsMounted from "../hooks/isMounted";
 
 const iconStyle = (active: boolean) =>
   `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
@@ -60,13 +61,13 @@ const MusicPage = ({
   myLastSongs: { song: string; artist: string }[] | undefined;
 }) => {
   const router = useRouter();
-
   const searchParams = useSearchParams();
 
   const id = searchParams?.get("id");
 
   const [scrollPercentage, setScrollPercentage] = React.useState(0);
   const [showComments, setShowComments] = React.useState(false);
+  const isMounted = useIsMounted()();
 
   const musicQuery: GetValidator = (() => {
     const order = searchParams?.get("order");
@@ -235,7 +236,7 @@ const MusicPage = ({
         <AnimatePresence mode="popLayout">
           <motion.div
             key={JSON.stringify(musicQuery)}
-            initial={{ x: 300, opacity: 0 }}
+            initial={isMounted ? { x: 300, opacity: 0 } : { x: 0, opacity: 1 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
             transition={{
