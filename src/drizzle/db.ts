@@ -2,7 +2,6 @@
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
 import { connect } from "@planetscale/database";
-import TRANSACTIONS from "../db/transactions/seed";
 
 // create the connection
 const connection = connect({
@@ -12,9 +11,3 @@ const connection = connect({
 });
 
 export const db = drizzle(connection);
-
-export const allTransactions = async () =>
-  await db.select().from(transactionsDrizzle);
-
-export const seedTransactions = async () =>
-  await db.insert(transactionsDrizzle).values(TRANSACTIONS);
