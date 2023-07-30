@@ -63,6 +63,7 @@ const Page = async ({ searchParams }: any) => {
   return (
     <MusicPage music={music}>
       <Suspense fallback={<LastSongsLoader />}>
+        {/* @ts-expect-error */}
         <LastSongs />
       </Suspense>
     </MusicPage>

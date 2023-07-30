@@ -5,7 +5,7 @@ import LastSongsClient from "./LastSongsClient";
 const LastSongs = async () => {
   const myLastSongs = await getLastSongs();
 
-  return <LastSongsClient myLastSongs={myLastSongs} isLoading={false} />;
+  return <LastSongsClient myLastSongs={myLastSongs} />;
 };
 
 export default LastSongs;
