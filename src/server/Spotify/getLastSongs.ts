@@ -62,8 +62,6 @@ const getLastSongs = async () => {
     artist: song.track.artists[0].name,
   }));
 
-  await new Promise((res) => setTimeout(res, 5000));
-
   return betterData;
 };
 
