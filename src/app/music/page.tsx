@@ -1,6 +1,5 @@
 import React from "react";
 import MusicPage from "../../components/MusicPage";
-import { GetValidatorIn } from "../../server/Music/schemas/music/getMusic";
 import { getMusic } from "../../server/Music";
 import getLastSongs from "../../server/Spotify/getLastSongs";
 

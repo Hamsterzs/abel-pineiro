@@ -17,7 +17,7 @@ import {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { fjalla } from "../pages/_app";
+import { fjalla } from "../fonts";
 import dbSongs from "../db/songs";
 import { SongQueryIn } from "../server/Music/schemas/songs/getSongs";
 import { trpc } from "../utils/trpc";

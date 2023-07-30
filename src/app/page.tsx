@@ -88,11 +88,13 @@ const Home = () => {
 
         <div className="absolute aspect-square h-[85%] animate-orbit-slow rounded-[100%] border-2 border-dashed border-slate-500 bg-transparent">
           <div className="relative h-full w-full">
-            <OrbitingOuterPlanet
-              className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
-              title="Work"
-              image="/jupiter.png"
-            />
+            <Link href="/drizz-music">
+              <OrbitingOuterPlanet
+                className="left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+                title="Work"
+                image="/jupiter.png"
+              />
+            </Link>
 
             <Link href="/music">
               <OrbitingOuterPlanet
