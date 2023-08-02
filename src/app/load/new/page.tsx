@@ -1,6 +1,5 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Contacts from "../../../components/Contacts";
-import Loader from "../../../components/Loader";
 
 const peopleJson = [
   {
