@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import { BiLoader, BiSkipNext } from "react-icons/bi";
 import { FaPlayCircle } from "react-icons/fa";
 
@@ -51,10 +51,11 @@ const Label = ({ children }: LayoutProps) => (
 
 // =================== Exported components ===================
 type LastSongsClientProps = {
-  myLastSongs: { song: string; artist: string }[];
+  myLastSongsPromise: Promise<{ song: string; artist: string }[]>;
 };
 
-const LastSongsClient = ({ myLastSongs }: LastSongsClientProps) => {
+const LastSongsClient = ({ myLastSongsPromise }: LastSongsClientProps) => {
+  const myLastSongs = use(myLastSongsPromise);
   const [lastSongIndex, setLastSongIndex] = React.useState(0);
 
   const handleLastSongIndexChange = (index: number) => {

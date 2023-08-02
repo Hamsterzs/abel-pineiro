@@ -3,9 +3,9 @@ import getLastSongs from "../server/Spotify/getLastSongs";
 import LastSongsClient from "./LastSongsClient";
 
 const LastSongs = async () => {
-  const myLastSongs = await getLastSongs();
+  const myLastSongs = getLastSongs();
 
-  return <LastSongsClient myLastSongs={myLastSongs} />;
+  return <LastSongsClient myLastSongsPromise={myLastSongs} />;
 };
 
 export default LastSongs;

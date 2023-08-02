@@ -4,8 +4,10 @@ import { db } from "../../../drizzle/db";
 import { album, artist, image, song } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../../server/Music/types/MusicData";
-import { LastSongsLoader } from "../../../components/LastSongsClient";
-import LastSongs from "../../../components/LastSongs";
+import LastSongsClient, {
+  LastSongsLoader,
+} from "../../../components/LastSongsClient";
+import getLastSongs from "../../../server/Spotify/getLastSongs";
 
 export const revalidate = 0;
 export const runtime = "edge";
@@ -53,6 +55,8 @@ const getMusicProps = async (urlQuery: {
 const Page = async ({ searchParams }: any) => {
   const { type, sortBy, order } = searchParams;
 
+  const LastSongsPromise = getLastSongs();
+
   const music = await getMusicProps({
     type,
     order,
@@ -62,8 +66,7 @@ const Page = async ({ searchParams }: any) => {
   return (
     <MusicPage music={music}>
       <Suspense fallback={<LastSongsLoader />}>
-        {/* @ts-expect-error */}
-        <LastSongs />
+        <LastSongsClient myLastSongsPromise={LastSongsPromise} />
       </Suspense>
       ;
     </MusicPage>
