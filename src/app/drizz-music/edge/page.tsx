@@ -52,13 +52,10 @@ const getMusicProps = async (urlQuery: {
 const Page = async ({ searchParams }: any) => {
   const { type, sortBy, order } = searchParams;
 
-  const music = await getMusicProps({
-    type,
-    order,
-    sortBy,
-  });
-
-  const myLastSongs = await getLastSongs();
+  const [music, myLastSongs] = await Promise.all([
+    getMusicProps({ type, order, sortBy }),
+    getLastSongs(),
+  ]);
 
   return <MusicPage music={music} myLastSongs={myLastSongs} />;
 };
