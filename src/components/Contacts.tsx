@@ -146,7 +146,7 @@ const Contacts = ({ loadTime }: { loadTime: number }) => {
             muted
           />
         )}
-        <h1 className="mx-auto mt-auto text-4xl">Loading...</h1>
+        <h1 className="mx-auto mt-48 text-4xl">Loading...</h1>
       </div>
     );
 
