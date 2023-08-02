@@ -1,15 +1,34 @@
 "use client";
 
-import React, { use } from "react";
+import React, { useEffect } from "react";
 
 const Contacts = ({
   people,
 }: {
   people: { name: string; email: string; phone: string }[];
 }) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const unMuteOnClick = () => {
+      const video = videoRef.current;
+
+      if (!video) return;
+
+      video.muted = false;
+    };
+
+    document.querySelector("body")?.addEventListener("click", unMuteOnClick);
+
+    return () => {
+      document
+        .querySelector("body")
+        ?.removeEventListener("click", unMuteOnClick);
+    };
+  }, []);
+
+  useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 10000);
@@ -21,10 +40,11 @@ const Contacts = ({
         <video
           className="mt-16 w-full scale-[2.2] 2xl:w-full 2xl:scale-100"
           loop
+          ref={videoRef}
+          src="/npc.mp4"
           autoPlay
-        >
-          <source src="/npc.mp4" type="video/mp4" />
-        </video>
+          muted
+        ></video>
         <h1 className="mx-auto mt-auto text-4xl">Loading</h1>
       </div>
     );
