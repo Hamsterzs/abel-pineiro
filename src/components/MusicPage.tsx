@@ -6,7 +6,7 @@ import { FaCompactDisc, FaPlayCircle, FaSortUp, FaUser } from "react-icons/fa";
 import { BiSkipNext } from "react-icons/bi";
 import { SiApplemusic } from "react-icons/si";
 import { BsCalendar3 } from "react-icons/bs";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
@@ -19,7 +19,6 @@ import {
 } from "../server/Music/schemas/music/getMusic";
 import { MusicData } from "../server/Music/types/MusicData";
 import useIsMounted from "../hooks/isMounted";
-import LastSongs from "./LastSongs";
 
 const iconStyle = (active: boolean) =>
   `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
@@ -62,7 +61,9 @@ const MusicPage = ({
   children: React.ReactNode;
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = {
+    get: (_string: string) => undefined,
+  };
 
   const id = searchParams?.get("id");
 
@@ -467,7 +468,9 @@ const StarRating = ({
 
 const Vinyl = ({ song }: { song: MusicData }) => {
   const [isHovered, setIsHovered] = React.useState(false);
-  const searchParams = useSearchParams();
+  const searchParams = {
+    get: (_string: string) => undefined,
+  };
   const order = searchParams?.get("order");
   const sortBy = searchParams?.get("sortBy");
   const type = searchParams?.get("type");
