@@ -2,6 +2,9 @@ import { z } from "zod";
 import { db } from "../../drizzle/db";
 import { spotify } from "../../drizzle/schema";
 import getRefreshToken from "./getRefreshToken";
+import { cache } from "react";
+
+export const revalidate = 30;
 
 const getLastSongs = async () => {
   const tokens = await db.select().from(spotify).limit(1);
@@ -21,9 +24,6 @@ const getLastSongs = async () => {
       Accept: "application/json",
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
-    },
-    next: {
-      revalidate: 60 * 2,
     },
   });
 
@@ -65,4 +65,6 @@ const getLastSongs = async () => {
   return betterData;
 };
 
-export default getLastSongs;
+const cachedGetLastSongs = cache(getLastSongs);
+
+export default cachedGetLastSongs;
