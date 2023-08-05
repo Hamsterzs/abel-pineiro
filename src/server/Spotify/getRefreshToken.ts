@@ -18,6 +18,7 @@ const getRefreshToken = async () => {
 
   spotifyApi.setRefreshToken(token.refreshToken);
 
+  // Move to api so it this function can work on the edge.
   const response = await spotifyApi.refreshAccessToken();
 
   const newTokens = {

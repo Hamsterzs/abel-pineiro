@@ -3,7 +3,6 @@
 import React, { use } from "react";
 import { BiLoader, BiSkipNext } from "react-icons/bi";
 import { FaPlayCircle } from "react-icons/fa";
-import getLastSongs from "../server/Spotify/getLastSongs";
 
 // =================== Layout components ===================
 type LayoutProps = {
