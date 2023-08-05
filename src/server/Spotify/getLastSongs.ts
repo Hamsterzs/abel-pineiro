@@ -2,6 +2,7 @@ import { z } from "zod";
 import { db } from "../../drizzle/db";
 import { spotify } from "../../drizzle/schema";
 import getRefreshToken from "./getRefreshToken";
+import { cache } from "react";
 
 export const revalidate = 30;
 
@@ -64,4 +65,6 @@ const getLastSongs = async () => {
   return betterData;
 };
 
-export default getLastSongs;
+const cachedGetLastSongs = cache(getLastSongs);
+
+export default cachedGetLastSongs;

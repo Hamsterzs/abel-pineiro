@@ -104,11 +104,13 @@ const Home = () => {
               />
             </Link>
 
-            <OrbitingOuterPlanet
-              className="right-0 top-1/2 translate-x-1/2"
-              image="/coldPlanet.png"
-              title="Entertainment"
-            />
+            <Link href="/edge-music">
+              <OrbitingOuterPlanet
+                className="right-0 top-1/2 translate-x-1/2"
+                image="/coldPlanet.png"
+                title="Entertainment"
+              />
+            </Link>
           </div>
         </div>
 

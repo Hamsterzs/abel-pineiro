@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../drizzle/db";
 import { album, artist, image, song } from "../drizzle/schema";
 import { MusicData } from "./Music/types/MusicData";
+import { cache } from "react";
 
 export const revalidate = 60;
 
@@ -33,4 +34,6 @@ const getMusic = async () => {
   return musicData;
 };
 
-export default getMusic;
+const cachedGetMusic = cache(getMusic);
+
+export default cachedGetMusic;
