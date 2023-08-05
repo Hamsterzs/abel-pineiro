@@ -7,7 +7,7 @@ import { MusicData } from "../../../server/Music/types/MusicData";
 import LastSongs, { LastSongsLoader } from "../../../components/LastSongs";
 import getLastSongs from "../../../server/Spotify/getLastSongs";
 
-export const revalidate = 20;
+export const revalidate = 120;
 export const runtime = "edge";
 
 const getMusicProps = async (urlQuery: {
