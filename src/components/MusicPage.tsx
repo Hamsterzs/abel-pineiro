@@ -298,9 +298,11 @@ const MusicPage = ({
                     <div
                       className={`${fjalla.variable} mt-auto px-4 font-fjalla`}
                     >
-                      <div className="text-6xl">{dispayedSong.title}</div>
+                      <div className="text-6xl">
+                        {/* {dispayedSong.title} */}
+                      </div>
                       <div className="my-8 text-4xl">
-                        {dispayedSong.subTitle}
+                        {/* {dispayedSong.subTitle} */}
                       </div>
                     </div>
 
@@ -359,8 +361,8 @@ const MusicPage = ({
                     </div>
 
                     <div className="mt-auto mb-20 text-2xl">
-                      <div>Album: {dispayedSong.title}</div>
-                      <div>Artist: {dispayedSong.subTitle}</div>
+                      <div>{/* Album: {dispayedSong.title} */}</div>
+                      <div>{/* Artist: {dispayedSong.subTitle} */}</div>
                       <div>released: 01/02/1999</div>
                     </div>
                   </div>
