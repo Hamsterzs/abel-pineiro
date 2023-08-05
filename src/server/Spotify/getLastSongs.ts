@@ -3,6 +3,8 @@ import { db } from "../../drizzle/db";
 import { spotify } from "../../drizzle/schema";
 import getRefreshToken from "./getRefreshToken";
 
+export const revalidate = 30;
+
 const getLastSongs = async () => {
   const tokens = await db.select().from(spotify).limit(1);
   const token = tokens[0];
@@ -22,9 +24,6 @@ const getLastSongs = async () => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    next: {
-      revalidate: 60,
-    },
   });
 
   if (response.status === 401) {
@@ -36,9 +35,6 @@ const getLastSongs = async () => {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${tokens.accessToken}`,
-      },
-      next: {
-        revalidate: 60,
       },
     });
   }
