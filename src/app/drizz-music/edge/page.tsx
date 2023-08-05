@@ -4,12 +4,10 @@ import { db } from "../../../drizzle/db";
 import { album, artist, image, song } from "../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../../server/Music/types/MusicData";
-import LastSongsClient, {
-  LastSongsLoader,
-} from "../../../components/LastSongsClient";
+import LastSongs, { LastSongsLoader } from "../../../components/LastSongs";
 import getLastSongs from "../../../server/Spotify/getLastSongs";
 
-export const revalidate = 0;
+export const revalidate = 20;
 export const runtime = "edge";
 
 const getMusicProps = async (urlQuery: {
@@ -66,7 +64,7 @@ const Page = async ({ searchParams }: any) => {
   return (
     <MusicPage music={music}>
       <Suspense fallback={<LastSongsLoader />}>
-        <LastSongsClient myLastSongsPromise={LastSongsPromise} />
+        <LastSongs myLastSongsPromise={LastSongsPromise} />
       </Suspense>
       ;
     </MusicPage>

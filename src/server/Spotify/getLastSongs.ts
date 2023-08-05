@@ -37,6 +37,9 @@ const getLastSongs = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${tokens.accessToken}`,
       },
+      next: {
+        revalidate: 60,
+      },
     });
   }
 
