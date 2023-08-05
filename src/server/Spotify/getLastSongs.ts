@@ -23,7 +23,7 @@ const getLastSongs = async () => {
       Authorization: `Bearer ${accessToken}`,
     },
     next: {
-      revalidate: 60 * 2,
+      revalidate: 60,
     },
   });
 
