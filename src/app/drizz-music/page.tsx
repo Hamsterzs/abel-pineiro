@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
-import getLastSongs from "../../server/Spotify/getLastSongs";
+import getLastSongs from "../../utils/getLastSongs";
 import getMusic from "../../server/getMusic";
 
 const Page = async () => {

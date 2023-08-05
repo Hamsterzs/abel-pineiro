@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { db } from "../../drizzle/db";
-import { spotify } from "../../drizzle/schema";
-import getRefreshToken from "./getRefreshToken";
+import { db } from "../drizzle/db";
+import { spotify } from "../drizzle/schema";
+import getRefreshToken from "../server/Spotify/getRefreshToken";
 import { cache } from "react";
 
 export const revalidate = 30;
