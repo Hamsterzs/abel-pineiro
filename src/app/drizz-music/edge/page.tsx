@@ -10,19 +10,7 @@ import getLastSongs from "../../../server/Spotify/getLastSongs";
 export const revalidate = 120;
 export const runtime = "edge";
 
-const getMusicProps = async (urlQuery: {
-  type: string;
-  sortBy: string;
-  order: string;
-}) => {
-  const query = {
-    type: urlQuery.type,
-    query: {
-      sortBy: urlQuery.sortBy,
-      order: urlQuery.order,
-    },
-  };
-
+const getMusicProps = async () => {
   const songs = await db
     .select({
       id: song.id,
@@ -50,16 +38,10 @@ const getMusicProps = async (urlQuery: {
   return musicData;
 };
 
-const Page = async ({ searchParams }: any) => {
-  const { type, sortBy, order } = searchParams;
-
+const Page = async () => {
   const LastSongsPromise = getLastSongs();
 
-  const music = await getMusicProps({
-    type,
-    order,
-    sortBy,
-  });
+  const music = await getMusicProps();
 
   return (
     <MusicPage music={music}>
