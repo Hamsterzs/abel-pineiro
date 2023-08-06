@@ -5,6 +5,8 @@ import getMusic from "../../server/getMusic";
 import { z } from "zod";
 import { unstable_cache } from "next/cache";
 
+export const fetchCache = "default-no-store";
+
 async function getLastSongs() {
   try {
     const baseUrl = process.env.BASE_URL;
