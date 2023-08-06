@@ -3,8 +3,7 @@ import MusicPage from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
 import getMusic from "../../server/getMusic";
 import { z } from "zod";
-
-export const revalidate = false;
+import { unstable_cache } from "next/cache";
 
 async function getLastSongs() {
   try {
@@ -34,8 +33,13 @@ async function getLastSongs() {
 }
 
 const Page = async () => {
+  const getMusicCached = unstable_cache(getMusic, ["music-key"], {
+    tags: ["music-tag"],
+    revalidate: false,
+  });
+
   const lastSongs = getLastSongs();
-  const music = await getMusic();
+  const music = await getMusicCached();
 
   return (
     <MusicPage music={music}>

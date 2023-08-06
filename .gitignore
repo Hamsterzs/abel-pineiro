@@ -38,3 +38,4 @@ next-env.d.ts
 
 # Drizzle push
 drizzle.config.json
+drizzle.config.ts
