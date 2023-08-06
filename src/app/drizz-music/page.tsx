@@ -7,26 +7,30 @@ import { z } from "zod";
 export const revalidate = 1000;
 
 async function getLastSongs() {
-  const baseUrl = process.env.BASE_URL;
+  try {
+    const baseUrl = process.env.BASE_URL;
 
-  const res = await fetch(baseUrl + "/api/music/last-songs", {
-    next: {
-      revalidate: 20,
-    },
-  });
+    const res = await fetch(baseUrl + "/api/music/last-songs", {
+      next: {
+        revalidate: 20,
+      },
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  const lastSongsSchema = z.array(
-    z.object({
-      song: z.string(),
-      artist: z.string(),
-    })
-  );
+    const lastSongsSchema = z.array(
+      z.object({
+        song: z.string(),
+        artist: z.string(),
+      })
+    );
 
-  const lastSongs = lastSongsSchema.parse(data);
+    const lastSongs = lastSongsSchema.parse(data);
 
-  return lastSongs;
+    return lastSongs;
+  } catch (error) {
+    return [];
+  }
 }
 
 const Page = async () => {
