@@ -4,7 +4,7 @@ import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
 import getMusic from "../../server/getMusic";
 import { z } from "zod";
 
-export const revalidate = 1000;
+export const revalidate = 0;
 
 async function getLastSongs() {
   try {
@@ -12,7 +12,7 @@ async function getLastSongs() {
 
     const res = await fetch(baseUrl + "/api/music/last-songs", {
       next: {
-        revalidate: 20,
+        revalidate: 120,
       },
     });
 
