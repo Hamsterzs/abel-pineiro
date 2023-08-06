@@ -5,7 +5,7 @@ import getMusic from "../../server/getMusic";
 import { z } from "zod";
 
 export const runtime = "edge";
-export const revalidate = 0;
+export const revalidate = false;
 
 async function getLastSongs() {
   try {
