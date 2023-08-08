@@ -4,6 +4,9 @@ import { album, artist, image, song } from "../drizzle/schema";
 import { MusicData } from "./Music/types/MusicData";
 import { cache } from "react";
 
+export const revalidate = false;
+export const dynamic = "force-static";
+
 const getMusic = async () => {
   const songs = await db
     .select({
