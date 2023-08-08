@@ -1,6 +1,6 @@
-import React, { Suspense } from "react";
-import LastSongsClient, { LastSongsLoader } from "../../components/LastSongs";
+import React from "react";
 import { z } from "zod";
+import LastSongsClient from "../../components/LastSongsDrizz";
 
 async function getLastSongs() {
   try {
@@ -33,14 +33,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-const Layout = ({ children }: Props) => {
-  const lastSongs = getLastSongs();
+const Layout = async ({ children }: Props) => {
+  const lastSongs = await getLastSongs();
 
   return (
     <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
-      <Suspense fallback={<LastSongsLoader />}>
-        <LastSongsClient myLastSongsPromise={lastSongs} />
-      </Suspense>
+      <LastSongsClient myLastSongs={lastSongs} />
       {children}
     </div>
   );
