@@ -7,18 +7,7 @@ import { album, artist, image, song } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../server/Music/types/MusicData";
 
-export const fetchCache = "default-no-store";
-
 const getMusic = async () => {
-  // return [
-  //   {
-  //     id: "1",
-  //     image: "/black-parade.jpg",
-  //     rating: 5,
-  //     title: "Song " + Math.random(),
-  //     subTitle: "Artist " + Math.random(),
-  //   },
-  // ];
   const songs = await db
     .select({
       id: song.id,
