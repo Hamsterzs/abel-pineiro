@@ -3,6 +3,7 @@ import MusicPage from "../../components/MusicPageDrizz";
 import getMusic from "../../server/getMusic";
 import { z } from "zod";
 import { unstable_cache } from "next/cache";
+import getLastSongs from "../../utils/getLastSongs";
 
 export const fetchCache = "default-no-store";
 
