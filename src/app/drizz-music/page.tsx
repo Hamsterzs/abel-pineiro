@@ -7,7 +7,7 @@ import { album, artist, image, song } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../server/Music/types/MusicData";
 
-export const dynamic = "force-static";
+export const fetchCache = "default-no-store";
 
 const getMusic = async () => {
   // return [
