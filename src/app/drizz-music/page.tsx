@@ -7,22 +7,17 @@ import { eq } from "drizzle-orm";
 import { MusicData } from "../../server/Music/types/MusicData";
 
 const getMusic = async () => {
-	const baseUrl = process.env.BASE_URL
-	const res = await fetch(baseUrl + '/api/music/getMusic', {next: {revalidate: false, tags: ['MusicData']}})
-	const data = (await res.json()) as MusicData[]
+  const baseUrl = process.env.BASE_URL;
+  const res = await fetch(baseUrl + "/api/music/getMusic", {
+    next: { revalidate: false, tags: ["MusicData"] },
+  });
+  const data = (await res.json()) as MusicData[];
 
-	return data
+  return data;
 };
 
 const Page = async () => {
-	/*
-  const music = await unstable_cache(getMusic, ["music-key"], {
-    tags: ["music-tag"],
-    revalidate: false,
-	})();
-	*/
-
-	const music = await getMusic()
+  const music = await getMusic().catch((err) => []);
 
   return <MusicPage music={music} />;
 };
