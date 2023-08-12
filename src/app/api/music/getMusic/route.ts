@@ -4,6 +4,9 @@ import { album, artist, image, song } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../../../server/Music/types/MusicData";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   const songs = await db
     .select({
@@ -28,7 +31,6 @@ export async function GET() {
         subTitle: song.artist,
       } as MusicData)
   );
-
 
   return NextResponse.json(musicData);
 }
