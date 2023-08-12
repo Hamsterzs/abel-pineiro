@@ -1,11 +1,23 @@
 import React from "react";
 import MusicPage from "../../components/MusicPageDrizz";
-import getMusic from "../../server/getMusic";
+import { unstable_cache } from "next/cache";
+import { db } from "../../drizzle/db";
+import { album, artist, image, song } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
+import { MusicData } from "../../server/Music/types/MusicData";
 
-export const revalidate = false;
+const getMusic = async () => {
+  const baseUrl = process.env.BASE_URL;
+  const res = await fetch(baseUrl + "/api/music/getMusic", {
+    next: { revalidate: false, tags: ["MusicData"] },
+  });
+  const data = (await res.json()) as MusicData[];
+
+  return data;
+};
 
 const Page = async () => {
-  const music = await getMusic();
+  const music = await getMusic().catch((err) => []);
 
   return <MusicPage music={music} />;
 };

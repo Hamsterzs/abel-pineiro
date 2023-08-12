@@ -4,6 +4,9 @@ import { spotify } from "../drizzle/schema";
 import getRefreshToken from "../server/Spotify/getRefreshToken";
 import { cache } from "react";
 
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
+
 const getLastSongsUnMemoized = async () => {
   const tokens = await db.select().from(spotify).limit(1);
   const token = tokens[0];
