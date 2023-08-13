@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { MusicData } from "../../server/Music/types/MusicData";
 import MusicPage from "../../components/MusicPageDrizz";
 
-const revalidate = 20;
+export const revalidate = 20;
 
 const getMusic = async () => {
   const songs = await db
