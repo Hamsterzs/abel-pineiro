@@ -6,6 +6,7 @@ import { MusicData } from "../../server/Music/types/MusicData";
 import MusicPage from "../../components/MusicPageDrizz";
 
 export const revalidate = 20;
+export const fetchCache = "force-no-store";
 
 const getMusic = async () => {
   const songs = await db
@@ -46,8 +47,7 @@ const Page = async () => {
   return (
     <>
       <h1>
-        Data feched at: {dateFetched.getHours()}: {dateFetched.getMinutes()} :{" "}
-        {dateFetched.getSeconds()}
+        {dateFetched.toDateString()} {dateFetched.toTimeString()}
       </h1>
       <MusicPage music={musicData.music} />
     </>
