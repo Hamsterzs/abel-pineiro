@@ -1,11 +1,12 @@
 import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
-import getMusic from "../../server/getMusic";
+// import getMusic from "../../server/getMusic";
 import { z } from "zod";
 
 export const runtime = "edge";
 export const revalidate = false;
+const getMusic = async () => [];
 
 async function getLastSongs() {
   try {
@@ -39,7 +40,7 @@ const Page = async () => {
   const music = await getMusic();
 
   return (
-    <MusicPage music={music.music}>
+    <MusicPage music={music}>
       <Suspense fallback={<LastSongsLoader />}>
         <LastSongs myLastSongsPromise={LastSongsPromise} />
       </Suspense>

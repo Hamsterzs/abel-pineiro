@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { album, artist, image, song } from "../drizzle/schema";
 import { MusicData } from "../server/Music/types/MusicData";
-import { db } from "../drizzle/dbServerless";
+import db from "../drizzle/dbServerless";
 
 // export const fetchCache = "force-no-store";
 // export const revalidate = 0;

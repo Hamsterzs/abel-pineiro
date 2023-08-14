@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "../../../../drizzle/dbServerless";
+import db from "../../../../drizzle/dbServerless";
 import { album, artist, image, song } from "../../../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { MusicData } from "../../../../server/Music/types/MusicData";
