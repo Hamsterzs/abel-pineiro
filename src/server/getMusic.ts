@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { db } from "../drizzle/db";
+import db from "../drizzle/dbServerless";
 import { album, artist, image, song } from "../drizzle/schema";
 import { MusicData } from "./Music/types/MusicData";
 import { cache } from "react";
@@ -29,7 +29,10 @@ const getMusic = async () => {
       } as MusicData)
   );
 
-  return musicData;
+  return {
+    music: musicData,
+    dateFetched: new Date().toISOString(),
+  };
 };
 
 const cachedGetMusic = cache(getMusic);

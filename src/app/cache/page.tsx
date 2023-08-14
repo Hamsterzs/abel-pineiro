@@ -1,15 +1,16 @@
 import React from "react";
-import { db } from "../../drizzle/db";
-import { album, artist, image, song } from "../../drizzle/schema";
-import { eq } from "drizzle-orm";
 import MusicPage from "../../components/MusicPageDrizz";
-import getMusic from "../../utils/getCacheMusic";
-
-export const revalidate = 20;
+import { unstable_cache } from "next/cache";
+import cachedGetMusic from "../../server/getMusic";
 
 const Page = async () => {
-  const musicData = await getMusic();
-  const dateFetched = new Date(musicData.dateFetched);
+  const getMusicData = unstable_cache(cachedGetMusic, ["MusicData"], {
+    revalidate: 20,
+    tags: ["MusicData"],
+  });
+
+  const musicData = await getMusicData();
+  const dateFetched = new Date(musicData.dateFetched || "12/12/2020");
 
   return (
     <>

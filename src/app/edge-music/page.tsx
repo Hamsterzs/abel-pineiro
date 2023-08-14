@@ -39,7 +39,7 @@ const Page = async () => {
   const music = await getMusic();
 
   return (
-    <MusicPage music={music}>
+    <MusicPage music={music.music}>
       <Suspense fallback={<LastSongsLoader />}>
         <LastSongs myLastSongsPromise={LastSongsPromise} />
       </Suspense>

@@ -14,3 +14,8 @@ export const getMusic = (musicQuery: GetValidatorIn): Promise<MusicData[]> => {
 
   return dbSongs.get(query);
 };
+
+export const getCacheMusic = async () => ({
+  music: await dbSongs.get({ order: "desc", sortBy: "createdAt" }),
+  dateFetched: new Date().toISOString(),
+});

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "../../drizzle/db";
+import { db } from "../../drizzle/dbServerless";
 import { spotify } from "../../drizzle/schema";
 import { createId } from "@paralleldrive/cuid2";
 
