@@ -15,7 +15,13 @@ const Page = async () => {
   return (
     <>
       <h1>
-        {dateFetched.toDateString()} {dateFetched.toTimeString()}
+        {dateFetched.toLocaleDateString("en-GB", {
+          timeZone: "America/Mexico_City",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          hour12: true,
+        })}{" "}
       </h1>
       <MusicPage music={musicData.music} />
     </>
