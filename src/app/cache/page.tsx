@@ -3,6 +3,8 @@ import MusicPage from "../../components/MusicPageDrizz";
 import { unstable_cache } from "next/cache";
 import cachedGetMusic from "../../server/getMusic";
 
+export const dynamic = "force-dynamic";
+
 const Page = async () => {
   const getMusicData = unstable_cache(cachedGetMusic, ["MusicData"], {
     revalidate: 20,
