@@ -8,7 +8,7 @@ import {
   datetime,
   int,
 } from "drizzle-orm/mysql-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const album = mysqlTable(
   "Album",
@@ -33,6 +33,18 @@ export const album = mysqlTable(
   }
 );
 
+export const albumRelations = relations(album, ({ many, one }) => ({
+  artist: one(artist, {
+    fields: [album.artistId],
+    references: [artist.id],
+  }),
+  image: one(image, {
+    fields: [album.imageId],
+    references: [image.id],
+  }),
+  songs: many(song),
+}));
+
 export const artist = mysqlTable(
   "Artist",
   {
@@ -51,6 +63,15 @@ export const artist = mysqlTable(
     };
   }
 );
+
+export const artistRelations = relations(artist, ({ many, one }) => ({
+  image: one(image, {
+    fields: [artist.imageId],
+    references: [image.id],
+  }),
+  albums: many(album),
+  songs: many(song),
+}));
 
 export const image = mysqlTable(
   "Image",
@@ -88,6 +109,17 @@ export const song = mysqlTable(
   }
 );
 
+export const songRelations = relations(song, ({ one }) => ({
+  album: one(album, {
+    fields: [song.albumId],
+    references: [album.id],
+  }),
+  artist: one(artist, {
+    fields: [song.artistId],
+    references: [artist.id],
+  }),
+}));
+
 export const spotify = mysqlTable(
   "Spotify",
   {
@@ -98,23 +130,6 @@ export const spotify = mysqlTable(
   (table) => {
     return {
       spotifyId: primaryKey(table.id),
-    };
-  }
-);
-
-export const transactions = mysqlTable(
-  "Transactions",
-  {
-    id: varchar("id", { length: 191 }).notNull(),
-    createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
-      .default(sql`CURRENT_TIMESTAMP(3)`)
-      .notNull(),
-    amount: int("amount").notNull(),
-    name: varchar("name", { length: 191 }).notNull(),
-  },
-  (table) => {
-    return {
-      transactionsId: primaryKey(table.id),
     };
   }
 );

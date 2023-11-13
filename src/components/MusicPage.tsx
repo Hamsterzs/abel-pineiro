@@ -1,69 +1,73 @@
 "use client";
 
 import Image from "next/image";
-import React, { useEffect, useRef } from "react";
+import { twMerge } from "tailwind-merge";
+import React, { ElementType, useEffect } from "react";
 import { FaCompactDisc, FaSortUp, FaUser } from "react-icons/fa";
 import { SiApplemusic } from "react-icons/si";
 import { BsCalendar3 } from "react-icons/bs";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { AnimatePresence, motion } from "framer-motion";
-import { Dialog } from "@headlessui/react";
-import { fjalla } from "../next/fonts";
-import useIsMounted from "../hooks/isMounted";
-import Songs from "../Entities/Music/Songs";
+import {
+  AnimatePresence,
+  motion,
+  useAnimate,
+  useAnimation,
+} from "framer-motion";
+import useScrollPercentage from "../hooks/useScrollPercentage";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const iconStyle = (active: boolean) =>
-  `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
-    active ? "text-blue-500" : "text-slate-500"
-  } `;
-
-const Types = [
+const MUSIC_TYPES = [
   {
     value: "songs",
-    icon: (active: boolean) => <SiApplemusic className={iconStyle(active)} />,
+    icon: SiApplemusic,
+    label: "Songs",
   },
   {
     value: "albums",
-    icon: (active: boolean) => <FaCompactDisc className={iconStyle(active)} />,
+    icon: FaCompactDisc,
+    label: "Albums",
   },
   {
     value: "artists",
-    icon: (active: boolean) => <FaUser className={iconStyle(active)} />,
+    icon: FaUser,
+    label: "Artists",
   },
 ];
 
-const SortBy = [
+const SORT_BY = [
   {
     value: "createdAt",
-    icon: (active: boolean) => <BsCalendar3 className={iconStyle(active)} />,
     label: "Date",
+    icon: BsCalendar3,
   },
   {
     value: "rating",
-    icon: (active: boolean) => <AiFillStar className={iconStyle(active)} />,
     label: "Rating",
+    icon: AiFillStar,
   },
 ];
 
-const MusicPage = ({
-  music,
-}: {
-  music: Awaited<ReturnType<Songs["list"]>>;
-}) => {
+type Music = {
+  id: string;
+  title: string;
+  subTitle: string;
+  image: string;
+  rating: number;
+};
+
+export type MusicPageProps = {
+  music: Music[];
+};
+
+const MusicPage = ({ music }: MusicPageProps) => {
+  const { scrollPercentage, scrollRef } = useScrollPercentage();
+
   const router = useRouter();
-  const searchParams = {
-    get: (_string: string) => undefined,
-  };
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
-  const id = searchParams?.get("id");
-
-  const [scrollPercentage, setScrollPercentage] = React.useState(0);
-  const [showComments, setShowComments] = React.useState(false);
-  const isMounted = useIsMounted()();
-
-  const dispayedSong = id && music.songs.find((song) => song.id === id);
+  console.log(id);
 
   if (!music) return null;
 
@@ -75,18 +79,18 @@ const MusicPage = ({
           <div className="flex w-full items-center justify-between overflow-auto md:mb-2 md:overflow-hidden">
             <div className="mr-10 flex gap-2">
               {/* Entity Selector dropdown */}
-              {Types.map((type) => (
+              {MUSIC_TYPES.map(({ value, label, icon }) => (
                 <Link
                   href={{
                     pathname: "/music",
-                    query: { type: type.value },
+                    query: { type: value },
                   }}
-                  key={type.value}
+                  key={value}
                   shallow
                 >
                   <div className="flex h-14 w-14 flex-col items-center justify-center">
-                    {type.icon("songs" === type.value)}
-                    {type.value}
+                    <Icon active={"songs" === value} Icon={icon} />
+                    {label}
                   </div>
                 </Link>
               ))}
@@ -94,7 +98,7 @@ const MusicPage = ({
 
             <div className="flex gap-2">
               {/* Sort by selector */}
-              {SortBy.map((sortBy) => (
+              {SORT_BY.map((sortBy) => (
                 <Link
                   href={{
                     pathname: "/music",
@@ -106,7 +110,10 @@ const MusicPage = ({
                   shallow
                 >
                   <div className="flex h-14 w-14 flex-col items-center justify-center">
-                    {sortBy.icon("createdAt" === sortBy.value)}
+                    <Icon
+                      active={"createdAt" === sortBy.value}
+                      Icon={sortBy.icon}
+                    />
                     {sortBy.label}
                   </div>
                 </Link>
@@ -155,231 +162,72 @@ const MusicPage = ({
               ></motion.div>
             </div>
             <div className="lg: text-xs lg:text-base">
-              {Math.ceil((scrollPercentage * music.songs.length) / 100)}:00/
-              {music.songs.length}:00
+              {Math.ceil((scrollPercentage * music.length) / 100)}:00/
+              {music.length}:00
             </div>
           </div>
         </div>
 
         {/* Vinyls Grid */}
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            initial={isMounted ? { x: 300, opacity: 0 } : { x: 0, opacity: 1 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{
-              x: { type: "spring", stiffness: 300, damping: 30 },
-              opacity: { duration: 0.2 },
-            }}
-            className="h-[calc(100%-1rem)]"
+        <div className="h-[calc(100%-1rem)]">
+          <div
+            ref={scrollRef}
+            className="scrollbar-hide grid h-full grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
           >
-            <VinylsContainer setScrollPercentage={setScrollPercentage}>
-              {music.songs.map((song) => (
+            {music.map((musicData) => (
+              <motion.div
+                layoutId={musicData.id}
+                className="rounded-2xl transition-colors duration-500 hover:bg-white"
+                key={musicData.id}
+              >
                 <Vinyl
-                  song={{
-                    id: song.id,
-                    artist: song.artist,
-                    name: song.name,
-                    image: song.image,
-                    rating: song.rating,
+                  music={{
+                    id: musicData.id,
+                    title: musicData.title,
+                    subTitle: musicData.subTitle,
+                    image: musicData.image,
+                    rating: musicData.rating,
                   }}
-                  key={song.id}
                 />
-              ))}
-            </VinylsContainer>
-          </motion.div>
-        </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Modal with selected data */}
+      {/* Selected Music */}
       <AnimatePresence>
-        {!!id && !!dispayedSong && (
-          <Dialog
-            open={!!id && !!dispayedSong}
-            onClose={() => {
-              const newQuery = { ...searchParams, id: undefined };
-              delete newQuery.id;
-
-              router.push(
-                "/music" +
-                  "?" +
-                  (() => {
-                    const newParams = new URLSearchParams(
-                      searchParams?.toString()
-                    );
-                    newParams.delete("id");
-                    return newParams.toString();
-                  })()
-              );
-            }}
-            unmount
+        {id && (
+          <motion.div
+            layoutId={id}
+            className="absolute top-0 left-0 z-10 min-h-screen min-w-full bg-white"
           >
-            {/* The backdrop, rendered as a fixed sibling to the panel container */}
-            <motion.div
-              className="fixed inset-0 z-40 bg-black/75"
-              aria-hidden="true"
-              animate={{ opacity: 1 }}
-              initial={{ opacity: 0 }}
-              exit={{ opacity: 0 }}
-            />
-
-            <Dialog.Panel className="relative">
-              <motion.div
-                initial={{ top: "150%" }}
-                animate={{ top: "50%" }}
-                exit={{ top: "150%" }}
-                className="xl:1/2 scrollbar-hide fixed top-1/2 left-1/2 z-50 h-[95%] w-[98%] -translate-y-1/2 -translate-x-1/2 overflow-y-auto rounded-lg bg-gray-300 text-center shadow-lg lg:w-3/4 xl:max-w-[1200px]"
-              >
-                <Link
-                  href={{
-                    pathname:
-                      "/music" +
-                      "?" +
-                      (() => {
-                        const newParams = new URLSearchParams(
-                          searchParams?.toString()
-                        );
-                        newParams.delete("id");
-                        return newParams.toString();
-                      })(),
-                  }}
-                  shallow
-                >
-                  <div className="absolute right-0">Exit</div>
-                </Link>
-                <div className="flex h-full w-full flex-col items-center">
-                  <div className="my-auto flex h-[90%] w-[90%] flex-col rounded-md border-2 border-white text-white">
-                    <Image
-                      src="/black-texture.jpg"
-                      fill
-                      alt="Vinyl"
-                      className="-z-30"
-                    />
-                    <div
-                      className={`${fjalla.variable} mt-auto px-4 font-fjalla`}
-                    >
-                      <div className="text-6xl">
-                        {/* {dispayedSong.title} */}
-                      </div>
-                      <div className="my-8 text-4xl">
-                        {/* {dispayedSong.subTitle} */}
-                      </div>
-                    </div>
-
-                    <div className="mb-auto">
-                      <StarRating rating={9} />
-                    </div>
-
-                    <div className="mx-auto h-[400px] w-3/4">
-                      {!showComments ? (
-                        <div key={"showComments" + showComments}>
-                          <iframe
-                            style={{ borderRadius: "12px" }}
-                            src="https://open.spotify.com/embed/track/65FftemJ1DbbZ45DUfHJXE?utm_source=generator"
-                            width="100%"
-                            height="200"
-                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                          ></iframe>
-                          <div className="flex gap-3 py-8">
-                            <button className="rounded-lg bg-blue-500 px-4 py-2 text-white">
-                              Like
-                            </button>
-                            <button
-                              className="rounded-lg bg-blue-500 px-4 py-2 text-white"
-                              onClick={() => setShowComments(true)}
-                            >
-                              Comments
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <button
-                            className="rounded-lg bg-blue-500 px-4 py-2 text-white"
-                            onClick={() => setShowComments(false)}
-                          >
-                            Listen to Song
-                          </button>
-                          <div className="scrollbar-hide h-80 overflow-y-auto">
-                            {[
-                              "this is really good stuff",
-                              "Look at this",
-                              "This is a comment",
-                              "Look at this",
-                            ].map((comment) => (
-                              <div
-                                className="mb-2 rounded-lg bg-white py-4 pl-8 text-left text-black"
-                                key={comment}
-                              >
-                                <h3>John Doe</h3>
-                                <p>{comment}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    <div className="mt-auto mb-20 text-2xl">
-                      <div>{/* Album: {dispayedSong.title} */}</div>
-                      <div>{/* Artist: {dispayedSong.subTitle} */}</div>
-                      <div>released: 01/02/1999</div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </Dialog.Panel>
-          </Dialog>
+            <Vinyl music={music.find((m) => m.id === id) as Music} active />
+            <motion.button
+              className="bg-red-400 px-4 py-1"
+              onClick={() => router.push("/music")}
+            >
+              Close
+            </motion.button>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
   );
 };
 
-// Because the container would unmount, The event listner would break becuse the component was no longer there.
-// So we moved the container to a seperate component so that the useEffect would handle adding and removing the event listener
-const VinylsContainer = ({
-  children,
-  setScrollPercentage,
-}: {
-  children: React.ReactNode;
-  setScrollPercentage: (n: number) => void;
-}) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+type IconProps = {
+  Icon: ElementType;
+  active: boolean;
+};
 
-  useEffect(() => {
-    const scrollContainer = scrollRef.current;
-
-    if (!scrollContainer) return;
-
-    const scrollListener = () => {
-      if (!scrollRef.current) return;
-
-      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-
-      if (scrollHeight === clientHeight) return setScrollPercentage(100);
-
-      const scrollPosition = (scrollTop / (scrollHeight - clientHeight)) * 100;
-
-      setScrollPercentage(Math.ceil(scrollPosition));
-    };
-
-    scrollListener();
-
-    scrollContainer.addEventListener("scroll", scrollListener);
-
-    return () => {
-      scrollContainer.removeEventListener("scroll", scrollListener);
-    };
-  }, [setScrollPercentage]);
-
+const Icon = ({ Icon, active }: IconProps) => {
   return (
-    <div
-      ref={scrollRef}
-      className="scrollbar-hide grid h-full grid-cols-2 gap-y-2 overflow-x-hidden overflow-y-scroll pb-24 pt-2 md:px-20 xl:grid-cols-3 3xl:grid-cols-4"
-    >
-      {children}
-    </div>
+    <Icon
+      className={`h-5 w-5 cursor-pointer lg:h-8 lg:w-8 ${
+        active ? "text-blue-500" : "text-slate-500"
+      }`}
+    />
   );
 };
 
@@ -429,35 +277,51 @@ const StarRating = ({
 };
 
 const Vinyl = ({
-  song,
+  music,
+  active = false,
 }: {
-  song: Awaited<ReturnType<Songs["list"]>>["songs"][number];
+  music: Music;
+  active?: boolean;
 }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const searchParams = {
-    get: (_string: string) => undefined,
-  };
-  const order = searchParams?.get("order");
-  const sortBy = searchParams?.get("sortBy");
-  const type = searchParams?.get("type");
+  const [scope, animate] = useAnimate();
+
+  useEffect(() => {
+    if (!active) return;
+
+    async function handleAnimation() {
+      await animate(
+        scope.current,
+        { translateX: "-20%" },
+        { delay: 0.5, duration: 0.5 }
+      );
+
+      // spin
+      animate(
+        scope.current,
+        {
+          rotate: 360,
+        },
+        { duration: 2, repeat: Infinity, ease: "linear" }
+      );
+    }
+
+    handleAnimation();
+  }, [active, animate, scope]);
 
   return (
     <Link
       href={{
         pathname: "/music",
-        query: { ...{ order, sortBy, type }, id: song.id },
+        query: { id: music.id },
       }}
       className="flex flex-col items-center justify-center"
-      shallow
     >
-      <div
-        className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center rounded-md text-2xl text-white shadow-md sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
-        key={song.id}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+      <motion.div
+        className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center text-2xl text-white shadow-xl sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
+        key={music.id}
       >
         <Image
-          src={song.image as string}
+          src={music.image as string}
           alt="Album cover"
           width={350}
           height={350}
@@ -465,12 +329,10 @@ const Vinyl = ({
           draggable={false}
         />
 
-        <div
-          className={`absolute left-full top-5 aspect-square w-[90%] transition-transform duration-500  ${
-            isHovered ? "-translate-x-1/2" : "-translate-x-[80%]"
-          } 
-          ${isHovered ? "rotate-90" : "rotate-0"}
-          `}
+        <motion.div
+          className={twMerge("absolute left-full top-5 aspect-square w-[90%]")}
+          initial={{ translateX: "-80%" }}
+          ref={scope}
         >
           <Image
             src="/vinyl.png"
@@ -480,26 +342,18 @@ const Vinyl = ({
             width={350}
             height={350}
           />
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
-      <div className="mb-4 w-4/5 truncate text-ellipsis text-center md:w-full">
+      <motion.div className="mb-4 w-4/5 truncate text-ellipsis text-center md:w-full">
         <div className="mx-auto mt-4 font-bold md:text-lg lg:text-2xl">
-          {song.name}
+          {music.title}
         </div>
-        <div className="text-sm md:text-base lg:text-xl">
-          {song.artist.name}
-        </div>
+        <div className="text-sm md:text-base lg:text-xl">{music.subTitle}</div>
         <div className="my-2">
-          <StarRating
-            rating={song.rating}
-            size={
-              typeof window !== "undefined" && window.innerWidth > 500 ? 30 : 20
-            }
-            color="black"
-          />
+          <StarRating rating={music.rating} size={30} color="black" />
         </div>
-      </div>
+      </motion.div>
     </Link>
   );
 };

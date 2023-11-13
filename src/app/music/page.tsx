@@ -1,20 +1,62 @@
 import React, { Suspense } from "react";
-import MusicList from "../../components/MusicPage";
+import MusicList, { MusicPageProps } from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
 import getLastSongs from "../../Entities/Spotify/getLastSongs";
 import Head from "next/head";
-import Songs from "../../Entities/Music/Songs";
+import { db } from "../../../db/db";
 
 export const revalidate = 0;
+
+async function getMusic() {
+  const songs = await db.query.song.findMany({
+    columns: {
+      id: true,
+      title: true,
+      rating: true,
+    },
+    with: {
+      album: {
+        columns: {
+          id: true,
+          title: true,
+        },
+        with: {
+          image: {
+            columns: {
+              id: true,
+              url: true,
+            },
+          },
+        },
+      },
+      artist: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return { songs, dataFetchedAt: new Date().toLocaleTimeString() };
+}
 
 const Page = async () => {
   const LastSongsPromise = getLastSongs();
 
-  const songs = new Songs();
-  const music = await songs.list();
+  const { songs, dataFetchedAt } = await getMusic();
+
+  const music: MusicPageProps["music"] = songs.map((song) => ({
+    id: song.id,
+    title: song.title,
+    subTitle: song.artist.name,
+    image: song.album.image?.url as string,
+    rating: song.rating,
+  }));
 
   return (
     <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
+      <span className="absolute text-gray-600">{dataFetchedAt}</span>
       <Head>
         <title>Music</title>
         <meta
