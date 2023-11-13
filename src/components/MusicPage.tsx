@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
-import { FaCompactDisc, FaPlayCircle, FaSortUp, FaUser } from "react-icons/fa";
-import { BiSkipNext } from "react-icons/bi";
+import { FaCompactDisc, FaSortUp, FaUser } from "react-icons/fa";
 import { SiApplemusic } from "react-icons/si";
 import { BsCalendar3 } from "react-icons/bs";
 import { useRouter } from "next/navigation";
@@ -11,14 +10,9 @@ import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
-import Head from "next/head";
 import { fjalla } from "../next/fonts";
-import {
-  getValidator,
-  GetValidator,
-} from "../server/Music/schemas/music/getMusic";
-import { MusicData } from "../server/Music/types/MusicData";
 import useIsMounted from "../hooks/isMounted";
+import Songs from "../Entities/Music/Songs";
 
 const iconStyle = (active: boolean) =>
   `h-5 w-5 lg:h-8 lg:w-8 cursor-pointer ${
@@ -55,10 +49,8 @@ const SortBy = [
 
 const MusicPage = ({
   music,
-  children,
 }: {
-  music: MusicData[];
-  children: React.ReactNode;
+  music: Awaited<ReturnType<Songs["list"]>>;
 }) => {
   const router = useRouter();
   const searchParams = {
@@ -71,36 +63,12 @@ const MusicPage = ({
   const [showComments, setShowComments] = React.useState(false);
   const isMounted = useIsMounted()();
 
-  const musicQuery: GetValidator = (() => {
-    const order = searchParams?.get("order");
-    const sortBy = searchParams?.get("sortBy");
-    const type = searchParams?.get("type");
-
-    const validatedQuery = getValidator.parse({
-      type,
-      query: { order, sortBy },
-    });
-
-    return validatedQuery;
-  })();
-
-  const dispayedSong = id && music?.find((song) => song.id === id);
+  const dispayedSong = id && music.songs.find((song) => song.id === id);
 
   if (!music) return null;
 
   return (
-    <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
-      <Head>
-        <title>Music</title>
-        <meta
-          name="description"
-          content="Abel Pineiro's favorite Songs, Artists and Albums."
-        />
-      </Head>
-
-      {/* Latest Song i listened to */}
-      {children}
-
+    <>
       {/* Main Body */}
       <div className="container h-[calc(100%-5rem)] xl:h-[calc(100%-9rem)] 3xl:max-w-[1750px] 4xl:max-w-[2100px] ">
         <div className="container mx-auto flex h-28 w-11/12 flex-col items-center justify-center gap-2 overflow-visible py-1 md:w-[70%] md:py-4 lg:h-36 lg:w-[65%] xl:w-[77%] 2xl:w-[78%] 3xl:w-[84%] 4xl:w-[85%]">
@@ -111,13 +79,13 @@ const MusicPage = ({
                 <Link
                   href={{
                     pathname: "/music",
-                    query: { ...musicQuery.query, type: type.value },
+                    query: { type: type.value },
                   }}
                   key={type.value}
                   shallow
                 >
                   <div className="flex h-14 w-14 flex-col items-center justify-center">
-                    {type.icon(musicQuery.type === type.value)}
+                    {type.icon("songs" === type.value)}
                     {type.value}
                   </div>
                 </Link>
@@ -131,16 +99,14 @@ const MusicPage = ({
                   href={{
                     pathname: "/music",
                     query: {
-                      ...musicQuery.query,
                       sortBy: sortBy.value,
-                      type: musicQuery.type,
                     },
                   }}
                   key={sortBy.value}
                   shallow
                 >
                   <div className="flex h-14 w-14 flex-col items-center justify-center">
-                    {sortBy.icon(musicQuery.query.sortBy === sortBy.value)}
+                    {sortBy.icon("createdAt" === sortBy.value)}
                     {sortBy.label}
                   </div>
                 </Link>
@@ -151,11 +117,6 @@ const MusicPage = ({
                 <Link
                   href={{
                     pathname: "/music",
-                    query: {
-                      ...musicQuery.query,
-                      order: musicQuery.query.order === "asc" ? "desc" : "asc",
-                      type: musicQuery.type,
-                    },
                   }}
                   shallow
                 >
@@ -163,7 +124,7 @@ const MusicPage = ({
                     <div className="h-5 w-5 rounded-full bg-slate-300 lg:h-8 lg:w-8 ">
                       <FaSortUp
                         className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${
-                          musicQuery.query.order === "asc"
+                          "asc" === "asc"
                             ? "rotate-0 lg:translate-y-[6px]"
                             : "rotate-180 lg:-translate-y-[6px]"
                         } `}
@@ -194,8 +155,8 @@ const MusicPage = ({
               ></motion.div>
             </div>
             <div className="lg: text-xs lg:text-base">
-              {Math.ceil((scrollPercentage * music.length) / 100)}:00/
-              {music.length}:00
+              {Math.ceil((scrollPercentage * music.songs.length) / 100)}:00/
+              {music.songs.length}:00
             </div>
           </div>
         </div>
@@ -203,7 +164,6 @@ const MusicPage = ({
         {/* Vinyls Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div
-            key={JSON.stringify(musicQuery)}
             initial={isMounted ? { x: 300, opacity: 0 } : { x: 0, opacity: 1 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
@@ -214,12 +174,12 @@ const MusicPage = ({
             className="h-[calc(100%-1rem)]"
           >
             <VinylsContainer setScrollPercentage={setScrollPercentage}>
-              {music.map((song) => (
+              {music.songs.map((song) => (
                 <Vinyl
                   song={{
                     id: song.id,
-                    title: song.title,
-                    subTitle: song.subTitle,
+                    artist: song.artist,
+                    name: song.name,
                     image: song.image,
                     rating: song.rating,
                   }}
@@ -372,7 +332,7 @@ const MusicPage = ({
           </Dialog>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
@@ -468,7 +428,11 @@ const StarRating = ({
   );
 };
 
-const Vinyl = ({ song }: { song: MusicData }) => {
+const Vinyl = ({
+  song,
+}: {
+  song: Awaited<ReturnType<Songs["list"]>>["songs"][number];
+}) => {
   const [isHovered, setIsHovered] = React.useState(false);
   const searchParams = {
     get: (_string: string) => undefined,
@@ -493,7 +457,7 @@ const Vinyl = ({ song }: { song: MusicData }) => {
         onMouseLeave={() => setIsHovered(false)}
       >
         <Image
-          src={song.image}
+          src={song.image as string}
           alt="Album cover"
           width={350}
           height={350}
@@ -521,9 +485,11 @@ const Vinyl = ({ song }: { song: MusicData }) => {
 
       <div className="mb-4 w-4/5 truncate text-ellipsis text-center md:w-full">
         <div className="mx-auto mt-4 font-bold md:text-lg lg:text-2xl">
-          {song.title}
+          {song.name}
         </div>
-        <div className="text-sm md:text-base lg:text-xl">{song.subTitle}</div>
+        <div className="text-sm md:text-base lg:text-xl">
+          {song.artist.name}
+        </div>
         <div className="my-2">
           <StarRating
             rating={song.rating}

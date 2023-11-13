@@ -1,44 +1,32 @@
 import React, { Suspense } from "react";
-import MusicPage from "../../components/MusicPage";
+import MusicList from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
-import getLastSongs from "../../Entities/Music/getLastSongs";
+import getLastSongs from "../../Entities/Spotify/getLastSongs";
+import Head from "next/head";
+import Songs from "../../Entities/Music/Songs";
 
 export const revalidate = 0;
 
-const getMusicProps = async (urlQuery: {
-  type: string;
-  sortBy: string;
-  order: string;
-}) => {
-  const query = {
-    type: urlQuery.type,
-    query: {
-      sortBy: urlQuery.sortBy,
-      order: urlQuery.order,
-    },
-  };
-
-  return [];
-};
-
-const Page = async ({ searchParams }: any) => {
-  const { type, sortBy, order } = searchParams;
-
+const Page = async () => {
   const LastSongsPromise = getLastSongs();
 
-  const music = await getMusicProps({
-    type,
-    order,
-    sortBy,
-  });
+  const songs = new Songs();
+  const music = await songs.list();
 
   return (
-    <MusicPage music={music}>
+    <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
+      <Head>
+        <title>Music</title>
+        <meta
+          name="description"
+          content="Abel Pineiro's favorite Songs, Artists and Albums."
+        />
+      </Head>
       <Suspense fallback={<LastSongsLoader />}>
         <LastSongs myLastSongsPromise={LastSongsPromise} />
       </Suspense>
-      ;
-    </MusicPage>
+      <MusicList music={music}></MusicList>
+    </div>
   );
 };
 

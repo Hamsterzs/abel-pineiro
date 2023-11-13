@@ -2,7 +2,7 @@ import { z } from "zod";
 import { db } from "../../../db/db";
 import { spotify } from "../../../db/schema";
 import { cache } from "react";
-import getRefreshToken from "../Spotify/getRefreshToken";
+import getRefreshToken from "./getRefreshToken";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
