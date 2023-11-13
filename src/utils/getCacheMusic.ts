@@ -1,6 +1,5 @@
 import { eq } from "drizzle-orm";
 import { album, artist, image, song } from "../drizzle/schema";
-import { MusicData } from "../server/Music/types/MusicData";
 import db from "../drizzle/dbServerless";
 
 // export const fetchCache = "force-no-store";
@@ -20,18 +19,15 @@ const getMusic = async () => {
     .leftJoin(album, eq(song.albumId, album.id))
     .leftJoin(image, eq(album.imageId, image.id));
 
-  const musicData: { dateFetched: string; music: MusicData[] } = {
+  const musicData: { dateFetched: string; music: any } = {
     dateFetched: new Date().toISOString(),
-    music: songs.map(
-      (song) =>
-        ({
-          id: song.id,
-          image: song.image,
-          rating: song.rating,
-          title: song.name,
-          subTitle: song.artist,
-        } as MusicData)
-    ),
+    music: songs.map((song) => ({
+      id: song.id,
+      image: song.image,
+      rating: song.rating,
+      title: song.name,
+      subTitle: song.artist,
+    })),
   };
 
   return musicData;

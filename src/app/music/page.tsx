@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
-import { getMusic } from "../../server/Music";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
 import getLastSongs from "../../utils/getLastSongs";
 
@@ -19,7 +18,7 @@ const getMusicProps = async (urlQuery: {
     },
   };
 
-  return await getMusic({ type: urlQuery.type, query: query.query });
+  return [];
 };
 
 const Page = async ({ searchParams }: any) => {
