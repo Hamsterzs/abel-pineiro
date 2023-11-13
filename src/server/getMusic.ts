@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
-import { db } from "../drizzle/db";
-import { album, artist, image, song } from "../drizzle/schema";
+import { db } from "../../db/db";
+import { album, artist, image, song } from "../../db/schema";
 import { MusicData } from "./Music/types/MusicData";
 import { cache } from "react";
 

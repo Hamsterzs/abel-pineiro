@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { db } from "../drizzle/db";
-import { spotify } from "../drizzle/schema";
-import getRefreshToken from "../server/Spotify/getRefreshToken";
+import { db } from "../../../db/db";
+import { spotify } from "../../../db/schema";
 import { cache } from "react";
+import getRefreshToken from "../Spotify/getRefreshToken";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";

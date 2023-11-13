@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import MusicPage from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
-import getLastSongs from "../../utils/getLastSongs";
+import getLastSongs from "../../Entities/Music/getLastSongs";
 
 export const revalidate = 0;
 

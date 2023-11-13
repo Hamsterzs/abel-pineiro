@@ -1,8 +1,8 @@
-import spotifyCredentails from "../../utils/spotifyCredentials";
+import spotifyCredentails from "./spotifyCredentials";
 import SpotifyWebApi from "spotify-web-api-node";
-import dbSpotify from "../../db/spotify";
-import { db } from "../../drizzle/db";
-import { spotify } from "../../drizzle/schema";
+import dbSpotify from ".";
+import { db } from "../../../db/db";
+import { spotify } from "../../../db/schema";
 
 const getRefreshToken = async () => {
   const spotifyApi = new SpotifyWebApi({

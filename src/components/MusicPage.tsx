@@ -12,7 +12,7 @@ import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import Head from "next/head";
-import { fjalla } from "../fonts";
+import { fjalla } from "../next/fonts";
 import {
   getValidator,
   GetValidator,

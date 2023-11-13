@@ -1,9 +1,6 @@
 import { eq } from "drizzle-orm";
-import { album, artist, image, song } from "../drizzle/schema";
-import db from "../drizzle/dbServerless";
-
-// export const fetchCache = "force-no-store";
-// export const revalidate = 0;
+import { album, artist, image, song } from "../../../db/schema";
+import db from "../../../db/dbServerless";
 
 const getMusic = async () => {
   const songs = await db

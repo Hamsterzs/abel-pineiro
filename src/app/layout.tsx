@@ -1,4 +1,4 @@
-import { abel, fjalla, prompt } from "../fonts";
+import { abel, fjalla, prompt } from "../next/fonts";
 import "../styles/globals.css";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {

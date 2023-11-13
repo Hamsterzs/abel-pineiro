@@ -1,6 +1,6 @@
 import { z } from "zod";
-import db from "../../drizzle/dbServerless";
-import { spotify } from "../../drizzle/schema";
+import db from "../../../db/dbServerless";
+import { spotify } from "../../../db/schema";
 import { createId } from "@paralleldrive/cuid2";
 
 const newTokensValidator = z.object({
