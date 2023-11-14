@@ -1,5 +1,5 @@
 import { z } from "zod";
-import db from "../../../db/dbServerless";
+import { db } from "../../../db/db";
 import { spotify } from "../../../db/schema";
 import { createId } from "@paralleldrive/cuid2";
 

@@ -1,7 +1,7 @@
 import spotifyCredentails from "./spotifyCredentials";
 import SpotifyWebApi from "spotify-web-api-node";
 import dbSpotify from ".";
-import db from "../../../db/dbServerless";
+import { db } from "../../../db/db";
 import { spotify } from "../../../db/schema";
 
 const getRefreshToken = async () => {
