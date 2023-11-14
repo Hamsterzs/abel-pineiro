@@ -3,7 +3,7 @@ import MusicList, { MusicPageProps } from "../../components/MusicPage";
 import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
 import getLastSongs from "../../Entities/Spotify/getLastSongs";
 import Head from "next/head";
-import { db } from "../../../db/db";
+import db from "../../../db/dbServerless";
 
 export const revalidate = 0;
 
@@ -41,6 +41,8 @@ async function getMusic() {
   return { songs, dataFetchedAt: new Date().toLocaleTimeString() };
 }
 
+export const runtime = "edge";
+
 const Page = async () => {
   const LastSongsPromise = getLastSongs();
 
@@ -67,7 +69,7 @@ const Page = async () => {
       <Suspense fallback={<LastSongsLoader />}>
         <LastSongs myLastSongsPromise={LastSongsPromise} />
       </Suspense>
-      <MusicList music={music} baseRoute="/music"></MusicList>
+      <MusicList music={music} baseRoute="/edge"></MusicList>
     </div>
   );
 };

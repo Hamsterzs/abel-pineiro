@@ -58,9 +58,10 @@ type Music = {
 
 export type MusicPageProps = {
   music: Music[];
+  baseRoute: string;
 };
 
-const MusicPage = ({ music }: MusicPageProps) => {
+const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
   const { scrollPercentage, scrollRef } = useScrollPercentage();
 
   const router = useRouter();
@@ -82,7 +83,7 @@ const MusicPage = ({ music }: MusicPageProps) => {
               {MUSIC_TYPES.map(({ value, label, icon }) => (
                 <Link
                   href={{
-                    pathname: "/music",
+                    pathname: baseRoute,
                     query: { type: value },
                   }}
                   key={value}
@@ -101,7 +102,7 @@ const MusicPage = ({ music }: MusicPageProps) => {
               {SORT_BY.map((sortBy) => (
                 <Link
                   href={{
-                    pathname: "/music",
+                    pathname: baseRoute,
                     query: {
                       sortBy: sortBy.value,
                     },
@@ -123,7 +124,7 @@ const MusicPage = ({ music }: MusicPageProps) => {
               <div className="flex items-center justify-center">
                 <Link
                   href={{
-                    pathname: "/music",
+                    pathname: baseRoute,
                   }}
                   shallow
                 >
@@ -188,6 +189,7 @@ const MusicPage = ({ music }: MusicPageProps) => {
                     image: musicData.image,
                     rating: musicData.rating,
                   }}
+                  baseUrl={baseRoute}
                 />
               </motion.div>
             ))}
@@ -202,10 +204,14 @@ const MusicPage = ({ music }: MusicPageProps) => {
             layoutId={id}
             className="absolute top-0 left-0 z-10 min-h-screen min-w-full bg-white"
           >
-            <Vinyl music={music.find((m) => m.id === id) as Music} active />
+            <Vinyl
+              music={music.find((m) => m.id === id) as Music}
+              active
+              baseUrl={baseRoute}
+            />
             <motion.button
               className="bg-red-400 px-4 py-1"
-              onClick={() => router.push("/music")}
+              onClick={() => router.push(baseRoute)}
             >
               Close
             </motion.button>
@@ -279,9 +285,11 @@ const StarRating = ({
 const Vinyl = ({
   music,
   active = false,
+  baseUrl,
 }: {
   music: Music;
   active?: boolean;
+  baseUrl: string;
 }) => {
   const [scope, animate] = useAnimate();
 
@@ -311,7 +319,7 @@ const Vinyl = ({
   return (
     <Link
       href={{
-        pathname: "/music",
+        pathname: baseUrl,
         query: { id: music.id },
       }}
       className="flex flex-col items-center justify-center"
