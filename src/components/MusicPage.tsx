@@ -315,6 +315,7 @@ const Vinyl = ({
         query: { id: music.id },
       }}
       className="flex flex-col items-center justify-center"
+      prefetch={true}
     >
       <motion.div
         className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center text-2xl text-white shadow-xl sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
