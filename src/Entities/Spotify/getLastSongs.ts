@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { db } from "../../../db/db";
+import db from "../../../db/dbServerless";
 import { spotify } from "../../../db/schema";
 import { cache } from "react";
 import getRefreshToken from "./getRefreshToken";
