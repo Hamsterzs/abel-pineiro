@@ -1,11 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import MusicList, { MusicPageProps } from "../../components/MusicPage";
-import LastSongs, { LastSongsLoader } from "../../components/LastSongs";
-import getLastSongs from "../../Entities/Spotify/getLastSongs";
-import Head from "next/head";
 import { db } from "../../../db/db";
-
-export const revalidate = 0;
+import getCurrentTime from "../../utils/getCurrentTime";
+import { unstable_cache } from "next/cache";
 
 async function getMusic() {
   const songs = await db.query.song.findMany({
@@ -37,14 +34,20 @@ async function getMusic() {
       },
     },
   });
+  console.log("Getting music from DB");
 
-  return { songs, dataFetchedAt: new Date().toLocaleTimeString() };
+  return { songs, dataFetchedAt: getCurrentTime() };
 }
 
-const Page = async () => {
-  const LastSongsPromise = getLastSongs();
+const cachedGetMusic = unstable_cache(getMusic, ["music"], { revalidate: 120 });
 
-  const { songs, dataFetchedAt } = await getMusic();
+type PageProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+const Page = async ({ searchParams }: PageProps) => {
+  console.log("Rendering music page " + searchParams);
+  const { songs, dataFetchedAt } = await cachedGetMusic();
 
   const music: MusicPageProps["music"] = songs.map((song) => ({
     id: song.id,
@@ -55,20 +58,12 @@ const Page = async () => {
   }));
 
   return (
-    <div className={`h-screen w-screen overflow-hidden bg-gray-200 pt-6`}>
-      <span className="absolute text-gray-600">{dataFetchedAt}</span>
-      <Head>
-        <title>Music</title>
-        <meta
-          name="description"
-          content="Abel Pineiro's favorite Songs, Artists and Albums."
-        />
-      </Head>
-      <Suspense fallback={<LastSongsLoader />}>
-        <LastSongs myLastSongsPromise={LastSongsPromise} />
-      </Suspense>
-      <MusicList music={music} baseRoute="/music"></MusicList>
-    </div>
+    <>
+      <span className="absolute top-5 text-gray-600">
+        Music fetched at {dataFetchedAt}
+      </span>
+      <MusicList music={music} baseRoute="/music" />
+    </>
   );
 };
 

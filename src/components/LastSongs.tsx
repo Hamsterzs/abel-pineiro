@@ -51,12 +51,10 @@ const Label = ({ children }: LayoutProps) => (
 
 // =================== Exported components ===================
 type LastSongsProps = {
-  myLastSongsPromise: Promise<{ song: string; artist: string }[]>;
+  myLastSongs: { song: string; artist: string }[];
 };
 
-const LastSongsClient = ({ myLastSongsPromise }: LastSongsProps) => {
-  const myLastSongs = use(myLastSongsPromise);
-
+const LastSongsClient = ({ myLastSongs }: LastSongsProps) => {
   const [lastSongIndex, setLastSongIndex] = React.useState(0);
 
   const handleLastSongIndexChange = (index: number) => {

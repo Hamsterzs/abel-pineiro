@@ -1,13 +1,10 @@
 import { z } from "zod";
 import { db } from "../../../db/db";
 import { spotify } from "../../../db/schema";
-import { cache } from "react";
 import getRefreshToken from "./getRefreshToken";
+import getCurrentTime from "../../utils/getCurrentTime";
 
-export const revalidate = 0;
-export const dynamic = "force-dynamic";
-
-const getLastSongsUnMemoized = async () => {
+const getLastSongs = async () => {
   const tokens = await db.select().from(spotify).limit(1);
   const token = tokens[0];
 
@@ -56,16 +53,15 @@ const getLastSongsUnMemoized = async () => {
 
   const newData = dataParser.safeParse(items);
 
-  if (!newData.success) return [];
+  if (!newData.success) return { data: [], dataFetchedAt: "" };
 
   const betterData = newData.data.map((song) => ({
     song: song.track.name,
     artist: song.track.artists[0].name,
   }));
+  console.log("Fetching last songs from Spotify");
 
-  return betterData;
+  return { data: betterData, dataFetchedAt: getCurrentTime() };
 };
-
-const getLastSongs = cache(getLastSongsUnMemoized);
 
 export default getLastSongs;
