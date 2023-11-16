@@ -43,7 +43,7 @@ const Home = () => {
               title="Music"
               planetImage="/neptune.png"
               animation="animate-back-and-forth-2"
-              links="/music"
+              links="/music/song"
             />
             <PlanetSlider
               title="Movies & TV"
@@ -96,7 +96,7 @@ const Home = () => {
               />
             </Link>
 
-            <Link href="/music">
+            <Link href="/music/song" prefetch>
               <OrbitingOuterPlanet
                 className="left-0 bottom-0 translate-x-full"
                 title="Music"

@@ -12,10 +12,9 @@ import {
   AnimatePresence,
   motion,
   useAnimate,
-  useAnimation,
 } from "framer-motion";
 import useScrollPercentage from "../hooks/useScrollPercentage";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const MUSIC_TYPES = [
   {
@@ -58,17 +57,12 @@ type Music = {
 
 export type MusicPageProps = {
   music: Music[];
-  baseRoute: string;
 };
 
-const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
+const MusicPage = ({ music }: MusicPageProps) => {
   const { scrollPercentage, scrollRef } = useScrollPercentage();
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
-  console.log(id);
+  const a = usePathname()
+  const pathName = a.split("/").slice(0, 3).join("/")
 
   if (!music) return null;
 
@@ -83,7 +77,7 @@ const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
               {MUSIC_TYPES.map(({ value, label, icon }) => (
                 <Link
                   href={{
-                    pathname: baseRoute,
+                    pathname: pathName,
                     query: { type: value },
                   }}
                   key={value}
@@ -102,7 +96,7 @@ const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
               {SORT_BY.map((sortBy) => (
                 <Link
                   href={{
-                    pathname: baseRoute,
+                    pathname: pathName,
                     query: {
                       sortBy: sortBy.value,
                     },
@@ -124,18 +118,17 @@ const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
               <div className="flex items-center justify-center">
                 <Link
                   href={{
-                    pathname: baseRoute,
+                    pathname: pathName,
                   }}
                   shallow
                 >
                   <div className="flex justify-center rounded-full">
                     <div className="h-5 w-5 rounded-full bg-slate-300 lg:h-8 lg:w-8 ">
                       <FaSortUp
-                        className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${
-                          "asc" === "asc"
+                        className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${"asc" === "asc"
                             ? "rotate-0 lg:translate-y-[6px]"
                             : "rotate-180 lg:-translate-y-[6px]"
-                        } `}
+                          } `}
                       />
                     </div>
                   </div>
@@ -181,43 +174,28 @@ const MusicPage = ({ music, baseRoute }: MusicPageProps) => {
                 className="rounded-2xl transition-colors duration-500 hover:bg-white"
                 key={musicData.id}
               >
-                <Vinyl
-                  music={{
-                    id: musicData.id,
-                    title: musicData.title,
-                    subTitle: musicData.subTitle,
-                    image: musicData.image,
-                    rating: musicData.rating,
+                <Link
+                  href={{
+                    pathname: `${pathName}/${musicData.id}`,
                   }}
-                  baseUrl={baseRoute}
-                />
+                  prefetch={true}
+                >
+                  <Vinyl
+                    music={{
+                      id: musicData.id,
+                      title: musicData.title,
+                      subTitle: musicData.subTitle,
+                      image: musicData.image,
+                      rating: musicData.rating,
+                    }}
+                  />
+                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Selected Music */}
-      <AnimatePresence>
-        {id && (
-          <motion.div
-            layoutId={id}
-            className="absolute top-0 left-0 z-10 min-h-screen min-w-full bg-white"
-          >
-            <Vinyl
-              music={music.find((m) => m.id === id) as Music}
-              active
-              baseUrl={baseRoute}
-            />
-            <motion.button
-              className="bg-red-400 px-4 py-1"
-              onClick={() => router.push(baseRoute)}
-            >
-              Close
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
@@ -230,9 +208,8 @@ type IconProps = {
 const Icon = ({ Icon, active }: IconProps) => {
   return (
     <Icon
-      className={`h-5 w-5 cursor-pointer lg:h-8 lg:w-8 ${
-        active ? "text-blue-500" : "text-slate-500"
-      }`}
+      className={`h-5 w-5 cursor-pointer lg:h-8 lg:w-8 ${active ? "text-blue-500" : "text-slate-500"
+        }`}
     />
   );
 };
@@ -282,14 +259,12 @@ const StarRating = ({
   );
 };
 
-const Vinyl = ({
+export const Vinyl = ({
   music,
   active = false,
-  baseUrl,
 }: {
   music: Music;
   active?: boolean;
-  baseUrl: string;
 }) => {
   const [scope, animate] = useAnimate();
 
@@ -299,8 +274,8 @@ const Vinyl = ({
     async function handleAnimation() {
       await animate(
         scope.current,
-        { translateX: "-20%" },
-        { delay: 0.5, duration: 0.5 }
+        { translateX: "1%" },
+        { delay: 0.2, duration: 0.5 }
       );
 
       // spin
@@ -309,7 +284,7 @@ const Vinyl = ({
         {
           rotate: 360,
         },
-        { duration: 2, repeat: Infinity, ease: "linear" }
+        { duration: 1.7, repeat: Infinity, ease: "linear" }
       );
     }
 
@@ -317,13 +292,8 @@ const Vinyl = ({
   }, [active, animate, scope]);
 
   return (
-    <Link
-      href={{
-        pathname: baseUrl,
-        query: { id: music.id },
-      }}
+    <div
       className="flex flex-col items-center justify-center"
-      prefetch={true}
     >
       <motion.div
         className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center text-2xl text-white shadow-xl sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
@@ -363,7 +333,8 @@ const Vinyl = ({
           <StarRating rating={music.rating} size={30} color="black" />
         </div>
       </motion.div>
-    </Link>
+
+    </div>
   );
 };
 

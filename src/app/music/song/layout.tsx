@@ -1,7 +1,7 @@
-import React from "react";
-import MusicList, { MusicPageProps } from "../../components/MusicPage";
-import { db } from "../../../db/db";
-import getCurrentTime from "../../utils/getCurrentTime";
+import React, { ReactNode } from "react";
+import MusicList, { MusicPageProps } from "../../../components/MusicPage";
+import { db } from "../../../../db/db";
+import getCurrentTime from "../../../utils/getCurrentTime";
 import { unstable_cache } from "next/cache";
 
 async function getMusic() {
@@ -41,12 +41,7 @@ async function getMusic() {
 
 const cachedGetMusic = unstable_cache(getMusic, ["music"], { revalidate: 120 });
 
-type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-const Page = async ({ searchParams }: PageProps) => {
-  console.log("Rendering music page " + searchParams);
+const Layout = async ({ children }: { children: ReactNode }) => {
   const { songs, dataFetchedAt } = await cachedGetMusic();
 
   const music: MusicPageProps["music"] = songs.map((song) => ({
@@ -62,9 +57,10 @@ const Page = async ({ searchParams }: PageProps) => {
       <span className="absolute top-5 text-gray-600">
         Music fetched at {dataFetchedAt}
       </span>
-      <MusicList music={music} baseRoute="/music" />
+      <MusicList music={music} />
+      {children}
     </>
   );
 };
 
-export default Page;
+export default Layout;
