@@ -11,7 +11,7 @@ export const revalidate = 20;
 
 const Page = async () => {
   const songs = await getSong();
-  const song = songs[0];
+  const [song] = songs;
 
   return (
     <div>

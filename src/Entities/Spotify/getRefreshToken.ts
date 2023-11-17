@@ -12,7 +12,7 @@ const getRefreshToken = async () => {
   });
 
   const tokens = await db.select().from(spotify).limit(1);
-  const token = tokens[0];
+  const [token] = tokens;
 
   if (!token) throw new Error("Spotify tokens don't exist");
 

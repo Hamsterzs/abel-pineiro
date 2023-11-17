@@ -8,13 +8,9 @@ import { SiApplemusic } from "react-icons/si";
 import { BsCalendar3 } from "react-icons/bs";
 import Link from "next/link";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import {
-  AnimatePresence,
-  motion,
-  useAnimate,
-} from "framer-motion";
+import { motion, useAnimate } from "framer-motion";
 import useScrollPercentage from "../hooks/useScrollPercentage";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const MUSIC_TYPES = [
   {
@@ -61,8 +57,8 @@ export type MusicPageProps = {
 
 const MusicPage = ({ music }: MusicPageProps) => {
   const { scrollPercentage, scrollRef } = useScrollPercentage();
-  const a = usePathname()
-  const pathName = a.split("/").slice(0, 3).join("/")
+  const a = usePathname();
+  const pathName = a.split("/").slice(0, 3).join("/");
 
   if (!music) return null;
 
@@ -125,10 +121,11 @@ const MusicPage = ({ music }: MusicPageProps) => {
                   <div className="flex justify-center rounded-full">
                     <div className="h-5 w-5 rounded-full bg-slate-300 lg:h-8 lg:w-8 ">
                       <FaSortUp
-                        className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${"asc" === "asc"
+                        className={`h-5 w-5 cursor-pointer text-center text-blue-500 transition-transform duration-300 lg:h-8 lg:w-8 ${
+                          "asc" === "asc"
                             ? "rotate-0 lg:translate-y-[6px]"
                             : "rotate-180 lg:-translate-y-[6px]"
-                          } `}
+                        } `}
                       />
                     </div>
                   </div>
@@ -195,7 +192,6 @@ const MusicPage = ({ music }: MusicPageProps) => {
           </div>
         </div>
       </div>
-
     </>
   );
 };
@@ -208,8 +204,9 @@ type IconProps = {
 const Icon = ({ Icon, active }: IconProps) => {
   return (
     <Icon
-      className={`h-5 w-5 cursor-pointer lg:h-8 lg:w-8 ${active ? "text-blue-500" : "text-slate-500"
-        }`}
+      className={`h-5 w-5 cursor-pointer lg:h-8 lg:w-8 ${
+        active ? "text-blue-500" : "text-slate-500"
+      }`}
     />
   );
 };
@@ -275,7 +272,7 @@ export const Vinyl = ({
       await animate(
         scope.current,
         { translateX: "1%" },
-        { delay: 0.2, duration: 0.5 }
+        { delay: 0.2, duration: 0.5 },
       );
 
       // spin
@@ -284,7 +281,7 @@ export const Vinyl = ({
         {
           rotate: 360,
         },
-        { duration: 1.7, repeat: Infinity, ease: "linear" }
+        { duration: 1.7, repeat: Infinity, ease: "linear" },
       );
     }
 
@@ -292,9 +289,7 @@ export const Vinyl = ({
   }, [active, animate, scope]);
 
   return (
-    <div
-      className="flex flex-col items-center justify-center"
-    >
+    <div className="flex flex-col items-center justify-center">
       <motion.div
         className="relative flex w-4/5 flex-shrink-0 flex-col items-center justify-center text-2xl text-white shadow-xl sm:h-40 sm:w-40 md:h-60 md:w-60 2xl:h-72 2xl:w-72 4xl:h-[19rem] 4xl:w-[19rem]"
         key={music.id}
@@ -333,7 +328,6 @@ export const Vinyl = ({
           <StarRating rating={music.rating} size={30} color="black" />
         </div>
       </motion.div>
-
     </div>
   );
 };

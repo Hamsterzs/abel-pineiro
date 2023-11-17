@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use } from "react";
+import React from "react";
 import { BiLoader, BiSkipNext } from "react-icons/bi";
 import { FaPlayCircle } from "react-icons/fa";
 

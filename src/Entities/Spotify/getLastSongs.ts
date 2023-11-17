@@ -6,15 +6,13 @@ import getCurrentTime from "../../utils/getCurrentTime";
 
 const getLastSongs = async () => {
   const tokens = await db.select().from(spotify).limit(1);
-  const token = tokens[0];
+  const [token] = tokens;
 
   if (!token) throw "Error with spotify tokens";
 
   const { accessToken } = token;
 
-  const url =
-    "https://api.spotify.com/v1/me/player/recently-played?limit=10&before=" +
-    Date.now();
+  const url = `https://api.spotify.com/v1/me/player/recently-played?limit=10&before=${Date.now()}`;
 
   let response = await fetch(url, {
     method: "GET",
@@ -48,7 +46,7 @@ const getLastSongs = async () => {
         name: z.string(),
         artists: z.array(z.object({ name: z.string() })),
       }),
-    })
+    }),
   );
 
   const newData = dataParser.safeParse(items);
